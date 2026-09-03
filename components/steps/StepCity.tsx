@@ -55,10 +55,11 @@ export const StepCity: React.FC<StepCityProps> = ({
 }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [currentArea, setCurrentArea] = useState<string>(selectedArea || 'All Areas');
+  const [coords, setCoords] = useState<{ lat: number; lng: number }>(userCoords || { lat: 18.5204, lng: 73.8407 });
   const [nearbyRestaurants, setNearbyRestaurants] = useState<Restaurant[]>([]);
   const [isDetectingLocation, setIsDetectingLocation] = useState(false);
   const [locationStatus, setLocationStatus] = useState<string>('Detecting live GPS location...');
-  const [detectedLocalityLabel, setDetectedLocalityLabel] = useState<string>('FC Road, Deccan, Pune');
+  const [detectedLocalityLabel, setDetectedLocalityLabel] = useState<string>('Pune, Maharashtra');
   const [isLoadingSpots, setIsLoadingSpots] = useState(true);
   const [showLocationPickerModal, setShowLocationPickerModal] = useState(false);
   const [availableAreas, setAvailableAreas] = useState<AreaInfo[]>(PUNE_AREAS);
@@ -68,7 +69,7 @@ export const StepCity: React.FC<StepCityProps> = ({
   const detectUserLocation = useCallback(() => {
     if (typeof window === 'undefined' || !navigator.geolocation) {
       setLocationStatus('📍 Defaulted to Pune (FC Road)');
-      setDetectedLocalityLabel('FC Road, Deccan, Pune');
+      setDetectedLocalityLabel('Pune, Maharashtra');
       return;
     }
 
@@ -79,7 +80,7 @@ export const StepCity: React.FC<StepCityProps> = ({
       async (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
         const accMeters = Math.round(accuracy || 20);
-        setUserCoords({ lat: latitude, lng: longitude });
+        setCoords({ lat: latitude, lng: longitude });
 
         try {
           const res = await fetch(`/api/location?lat=${latitude}&lng=${longitude}`);
@@ -135,7 +136,7 @@ export const StepCity: React.FC<StepCityProps> = ({
     setIsLoadingSpots(true);
     try {
       const areaParam = area && area !== 'All Areas' && area !== 'All' ? encodeURIComponent(area) : '';
-      let url = `/api/restaurants/nearby?city=${encodeURIComponent(city)}&area=${areaParam}&lat=${userCoords.lat}&lng=${userCoords.lng}`;
+      let url = `/api/restaurants/nearby?city=${encodeURIComponent(city)}&area=${areaParam}&lat=${coords.lat}&lng=${coords.lng}`;
       if (query.trim()) {
         url = `/api/restaurants/search?q=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`;
       }
@@ -153,7 +154,7 @@ export const StepCity: React.FC<StepCityProps> = ({
     } finally {
       setIsLoadingSpots(false);
     }
-  }, [userCoords, selectedRestaurant, onSelectRestaurant]);
+  }, [coords, selectedRestaurant, onSelectRestaurant]);
 
   useEffect(() => {
     const timer = setTimeout(() => {
