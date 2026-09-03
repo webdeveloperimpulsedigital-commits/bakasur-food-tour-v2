@@ -135,12 +135,12 @@ export const StepDish: React.FC<StepDishProps> = ({
         )}
       </div>
 
-      {/* 4 to 5 Recommended Hotel Dishes List */}
+      {/* 3 Dishes Associated with Restaurant */}
       <div className="flex flex-col gap-2">
         <div className="flex items-center justify-between text-xs">
           <span className="font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
-            <span>Recommended by {restaurant.name} ({filteredDishes.length} Dishes)</span>
+            <Utensils className="w-3.5 h-3.5 text-blue-600" />
+            <span>Dishes at {restaurant.name}</span>
           </span>
           {activeDishName && (
             <span className="text-[11px] font-bold text-[#023093] truncate max-w-[180px]">
@@ -152,13 +152,13 @@ export const StepDish: React.FC<StepDishProps> = ({
         <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
           {isLoading && dishes.length === 0 ? (
             <div className="flex flex-col gap-2">
-              {[1, 2, 3, 4].map(i => (
+              {[1, 2, 3].map(i => (
                 <div key={i} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
               ))}
             </div>
           ) : (
             <>
-              {/* Option to feed typed custom dish if searching */}
+              {/* Option to feed typed custom dish if searching or manual entry */}
               {searchQuery.trim() && (
                 <div
                   onClick={() => handleSelectCustomDish(searchQuery)}
@@ -175,14 +175,14 @@ export const StepDish: React.FC<StepDishProps> = ({
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5">
                         <h4 className="font-black text-xs sm:text-sm text-blue-950 brand-font truncate">
-                          Feed Custom Dish: &ldquo;{searchQuery}&rdquo;
+                          Recommend Dish: &ldquo;{searchQuery}&rdquo;
                         </h4>
                         <span className="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">
-                          Custom
+                          Your Recommendation
                         </span>
                       </div>
                       <p className="text-[10px] sm:text-[11px] text-slate-500 truncate">
-                        Feed Bakasur your custom chosen dish at {restaurant.name}
+                        Feed Bakasur your custom recommended dish at {restaurant.name}
                       </p>
                     </div>
                   </div>
@@ -201,18 +201,18 @@ export const StepDish: React.FC<StepDishProps> = ({
                   >
                     {isCustomDishSelected && selectedDish?.name.toLowerCase() === searchQuery.toLowerCase()
                       ? '✓ Selected'
-                      : '+ Feed This'}
+                      : '+ Recommend This'}
                   </button>
                 </div>
               )}
 
-              {/* List of recommended dishes */}
+              {/* List of 3 Dishes associated with restaurant */}
               {filteredDishes.length === 0 && !searchQuery.trim() ? (
                 <div className="p-4 text-center rounded-xl bg-slate-50 border border-slate-200">
-                  <p className="text-xs text-slate-500">No dishes available at this moment.</p>
+                  <p className="text-xs text-slate-500">No dishes available at this moment. You can type any dish above to recommend.</p>
                 </div>
               ) : (
-                filteredDishes.map((dish) => {
+                filteredDishes.slice(0, 3).map((dish) => {
                   const isSelected = selectedDish?.name === dish.name;
                   return (
                     <div
@@ -241,14 +241,9 @@ export const StepDish: React.FC<StepDishProps> = ({
                             <span className="text-[10px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.2 rounded">
                               ₹{dish.price}
                             </span>
-                            {dish.rating && (
-                              <span className="flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 px-1 rounded">
-                                ★ {dish.rating}
-                              </span>
-                            )}
                           </div>
                           <p className="text-[10px] sm:text-[11px] text-slate-500 truncate mt-0.5">
-                            {dish.description || 'Special signature dish prepared with authentic spices.'}
+                            {dish.description || `Dish served at ${restaurant.name}.`}
                           </p>
                         </div>
                       </div>

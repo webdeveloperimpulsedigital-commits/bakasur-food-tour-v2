@@ -54,43 +54,46 @@ export const StepEating: React.FC<StepEatingProps> = ({
     }
   }, [currentStage, isHeartburnStage]);
 
-  // Stage Dialogues & Visual Metadata
+  // Stage Dialogues & Visual Metadata (3-Tap Feeding Loop & Acidity from Indulgence)
   const STAGE_CONFIG = {
     1: {
-      title: 'Pehli Bhookh (Appetite Started)',
-      dialogue: '😋 Mmm, delicious! But I\'m still hungry... Mujhe aur khilao! 🤤',
-      subtitle: 'Bakasur finished the 20% portion of ' + dish.name + '! He is waiting for more food.',
+      title: 'Pehli Helping (Appetite Started)',
+      dialogue: '😋 Mmm, delicious! But my stomach isn\'t full yet... Mujhe aur khilao! 🤤',
+      subtitle: 'Bakasur devoured the 1st plate of ' + dish.name + '! He is waiting for more food.',
       statusColor: 'text-amber-500',
       badgeBg: 'bg-amber-100 text-amber-800 border-amber-300',
       progressBg: 'from-amber-500 via-orange-400 to-yellow-300',
-      ctaText: '🍽️ AUR KHILAO (FEED 2ND DISH)',
-      ctaSubtext: '👆 20% finished! Click "AUR KHILAO" to feed Bakasur the next dish (45%)!',
+      plates: '🍽️ 1st Plate Consumed',
+      ctaText: '🍽️ AUR KHILAO (FEED 2ND HELPING)',
+      ctaSubtext: '👆 20% capacity reached! Click "AUR KHILAO" to feed Bakasur the 2nd helping (45%)!',
       mascotEmoji: '😋',
       mascotMood: 'Waiting for More Food'
     },
     2: {
-      title: 'Pel Ke Bhookh (Going Strong)',
-      dialogue: '🍗 Mazedaar! Par pet abhi bhi nahi bhara... Aur lao!',
-      subtitle: 'Bakasur gobbled 45% food! His monster appetite demands the final portion.',
+      title: 'Doosri Helping (Going Strong)',
+      dialogue: '🍗 Mazedaar! Par Bakasur ke monster pet ke liye yeh kaafi nahi hai... Aur lao, aur khilao!',
+      subtitle: 'Bakasur gobbled down 2 full plates! His massive appetite demands the 3rd final course.',
       statusColor: 'text-orange-500',
       badgeBg: 'bg-orange-100 text-orange-800 border-orange-300',
       progressBg: 'from-orange-500 via-amber-400 to-yellow-400',
-      ctaText: '🍽️ AUR KHILAO (FEED 3RD DISH)',
+      plates: '🍽️🍽️ 2 Plates Consumed',
+      ctaText: '🍽️ AUR KHILAO (FEED 3RD HELPING)',
       ctaSubtext: '👆 45% devoured! Click "AUR KHILAO" to feed him to maximum capacity (100%)!',
       mascotEmoji: '🤤',
       mascotMood: 'Waiting for More Food'
     },
     3: {
-      title: 'Pet Phat Gaya! (Acidity Attack 🔥)',
-      dialogue: '🔥🔥 ARRE BAAP RE! Masala bohot zyada ho gaya! Pet mein aag lag gayi... Bachao! Help karo!',
-      subtitle: '100% Capacity! Too much intense spice triggered massive heartburn! Give Bakasur Gastrium fast antacid!',
+      title: 'Indulgence Overload (Acidity Discomfort 🔥)',
+      dialogue: '🔥🔥 ARRE BAAP RE! Teen-teen heavy helpings aur itna zyada indulgence! Khana toh zabardast tha par overeating se pet mein aag lag gayi... Bachao! Help karo!',
+      subtitle: 'Bakasur enjoyed 3 extra helpings of delicious food! Heavy indulgence and extra helpings have caused acidity discomfort. Can you help put out the fire?',
       statusColor: 'text-red-500',
       badgeBg: 'bg-red-100 text-red-800 border-red-300 animate-pulse',
       progressBg: 'from-red-600 via-rose-500 to-orange-500',
-      ctaText: '💊 GIVE GASTRIUM TO BAKASUR ⚡',
-      ctaSubtext: '🚨 100% Acidity Overload! Neutralize heartburn in 6 seconds with Gastrium!',
+      plates: '🍽️🍽️🍽️ 3 Plates (Overload!)',
+      ctaText: '⚡ HELP BAKASUR NOW! 🔥',
+      ctaSubtext: '🚨 Bakasur is in distress from overeating! Click to help him neutralize the burning discomfort!',
       mascotEmoji: '🔥',
-      mascotMood: 'Acidity Overload!'
+      mascotMood: 'Discomfort from Indulgence'
     }
   };
 
@@ -221,10 +224,13 @@ export const StepEating: React.FC<StepEatingProps> = ({
         {/* Row 2: Food Meter Capacity & Status */}
         <div className="flex flex-col gap-2 pt-1">
           <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 flex-wrap">
               <Flame className={`w-4 h-4 ${meterPercent >= 100 ? 'text-red-500 animate-ping' : 'text-amber-400 animate-pulse'}`} />
               <span className="font-black text-slate-200 uppercase tracking-wide brand-font">
                 FOOD METER: <span className={currentConfig.statusColor}>{currentConfig.title}</span>
+              </span>
+              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-white/10 text-cyan-300 border border-white/10">
+                {currentConfig.plates}
               </span>
             </div>
             <span className={`font-black font-mono text-sm sm:text-base ${

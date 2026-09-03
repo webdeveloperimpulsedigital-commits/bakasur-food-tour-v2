@@ -10,6 +10,7 @@ import { StepDish, SPICE_LEVELS, SpiceOption } from '@/components/steps/StepDish
 import { StepEating } from '@/components/steps/StepEating';
 import { StepRelief } from '@/components/steps/StepRelief';
 import { StepContest } from '@/components/steps/StepContest';
+import { StepMap } from '@/components/steps/StepMap';
 import { Restaurant, Dish } from '@/lib/db';
 
 type AppStep =
@@ -21,7 +22,8 @@ type AppStep =
   | 'heartburn'
   | 'relief_countdown'
   | 'relief_done'
-  | 'pass';
+  | 'pass'
+  | 'map';
 
 export default function CampaignPage() {
   // Campaign State
@@ -95,8 +97,7 @@ export default function CampaignPage() {
         const osc = ctx.createOscillator();
         const gain = ctx.createGain();
         osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, ctx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, ctx.currentTime + 0.1);
+        osc.frequency.setValueAtTime(type === 'click' ? 440 : 220, ctx.currentTime);
         gain.gain.setValueAtTime(0.2, ctx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.15);
         osc.connect(gain);
@@ -213,13 +214,13 @@ export default function CampaignPage() {
     setCurrentStep('relief_done');
   };
 
-  // Transitions: Relief Complete -> Official Pass (Step 8)
+  // Transitions: Relief Complete -> Official Pass / Submission Confirmation (Step 8)
   const handleGetOfficialPass = () => {
     playSound('fanfare');
     setCurrentStep('pass');
   };
 
-  // Restart Tour
+  // Restart Tour / Recommend Another Spot
   const handleRestartTour = () => {
     playSound('click');
     const newSess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
@@ -248,6 +249,14 @@ export default function CampaignPage() {
             onStartTour={handleStartTour}
             selectedCity={selectedCity.name}
             selectedArea={selectedArea}
+          />
+        ) : currentStep === 'map' ? (
+          /* Collective Food Tour Map Screen */
+          <StepMap
+            onProceedToContest={() => setCurrentStep('pass')}
+            onRestartTour={handleRestartTour}
+            selectedRestaurantName={selectedRestaurant?.name}
+            selectedCity={selectedCity.name}
           />
         ) : currentStep === 'relief_countdown' ? (
           /* 6-Second Gastrium Relief Active Countdown Screen (00:33 - 00:38) */
@@ -343,12 +352,13 @@ export default function CampaignPage() {
                 )}
 
                 {currentStep === 'pass' && selectedRestaurant && (
-                  /* Step 8: Official Tour Pass & Share */
+                  /* Step 8: Submission Confirmation, Food Tour Map & Offline Registration */
                   <StepContest
                     sessionId={sessionId}
                     restaurant={selectedRestaurant}
                     dish={selectedDish || { name: 'Bun Omelette' }}
                     spice={selectedSpice}
+                    onExploreMap={() => setCurrentStep('map')}
                     onRestartTour={handleRestartTour}
                   />
                 )}

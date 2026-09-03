@@ -19,13 +19,15 @@ interface MapPoint {
 }
 
 interface StepMapProps {
-  onProceedToContest: () => void;
+  onProceedToContest?: () => void;
+  onRestartTour?: () => void;
   selectedRestaurantName?: string;
   selectedCity?: string;
 }
 
 export const StepMap: React.FC<StepMapProps> = ({
   onProceedToContest,
+  onRestartTour,
   selectedRestaurantName,
   selectedCity
 }) => {
@@ -63,25 +65,27 @@ export const StepMap: React.FC<StepMapProps> = ({
   const cities = ['All', 'Pune', 'Mumbai', 'Delhi', 'Bengaluru', 'Kolkata', 'Hyderabad'];
 
   return (
-    <div className="flex flex-col gap-5 w-full max-w-xl mx-auto">
+    <div className="flex flex-col gap-5 w-full max-w-2xl mx-auto py-2">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
           <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>Shared Food Tour Map</span>
+            <span>Collective Outcome</span>
           </div>
-          <h2 className="text-xl sm:text-2xl font-black text-white brand-font">Global Campaign Map</h2>
+          <h2 className="text-xl sm:text-3xl font-black text-white brand-font">
+            Gastrium Food Tour Map 🗺️
+          </h2>
         </div>
 
         <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-600/20 border border-blue-400/40 text-xs text-cyan-300 font-extrabold">
           <Flame className="w-3.5 h-3.5 text-cyan-400 fill-cyan-400" />
-          <span>{totalVisits.toLocaleString()}+ Visits</span>
+          <span>{totalVisits.toLocaleString()}+ Contributions</span>
         </div>
       </div>
 
-      <p className="text-xs text-blue-200/70">
-        Every foodie who takes the tour adds to the live Bakasur Food Map across India! Click on any spot to view legendary dishes and total food-tour visits.
+      <p className="text-xs sm:text-sm text-blue-200/80 leading-relaxed">
+        Every foodie recommendation submitted is indexed into the live Gastrium Food Tour Map across India! Click on any spot to view recommended dishes and tour stops.
       </p>
 
       {/* City Filter Pills */}
@@ -124,7 +128,7 @@ export const StepMap: React.FC<StepMapProps> = ({
         </div>
 
         {/* Map Points Visualization */}
-        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-auto">
+        <div className="relative z-10 grid grid-cols-2 sm:grid-cols-3 gap-2.5 my-auto overflow-y-auto max-h-[190px] pr-1">
           {filteredPoints.map((point) => {
             const isSelected = activePoint?.id === point.id;
             return (
@@ -164,7 +168,7 @@ export const StepMap: React.FC<StepMapProps> = ({
               <div className="min-w-0">
                 <h4 className="font-extrabold text-xs sm:text-sm text-white truncate brand-font">{activePoint.name}</h4>
                 <p className="text-[11px] text-blue-200/80 truncate">
-                  Popular: <span className="font-semibold text-cyan-300">{activePoint.featured_dish}</span>
+                  Dish: <span className="font-semibold text-cyan-300">{activePoint.featured_dish}</span>
                 </p>
               </div>
             </div>
@@ -177,27 +181,25 @@ export const StepMap: React.FC<StepMapProps> = ({
         )}
       </div>
 
-      {/* Campaign Participation CTA */}
-      <div className="rounded-3xl bg-gradient-to-r from-[#101642] via-[#0e1338] to-[#101642] border-2 border-[#023093]/60 p-5 text-center shadow-2xl">
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-600/20 border border-blue-400/30 text-cyan-300 text-xs font-bold mb-2">
-          <Trophy className="w-3.5 h-3.5 text-cyan-400" />
-          <span>Contest Grand Prize</span>
-        </div>
-        <h3 className="font-black text-lg text-white mb-1 brand-font">
-          Complete Your Food Tour &amp; Win!
-        </h3>
-        <p className="text-xs text-blue-100/70 mb-4 max-w-sm mx-auto">
-          Claim your official Bakasur Food Tour Certificate, enter the weekly food-hamper contest, and win exciting Gastrium hampers!
-        </p>
+      {/* Navigation Buttons Row */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
+        {onProceedToContest && (
+          <button
+            onClick={onProceedToContest}
+            className="py-3.5 px-5 rounded-2xl bg-white/10 hover:bg-white/20 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer flex items-center justify-center gap-2"
+          >
+            <span>← Back to My Submission</span>
+          </button>
+        )}
 
-        <button
-          onClick={onProceedToContest}
-          className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-[#023093] via-[#033bb8] to-[#00acc1] hover:from-[#033bb8] hover:to-[#00acc1] text-white font-black text-base uppercase tracking-wider shadow-xl shadow-blue-900/50 hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font"
-        >
-          <Trophy className="w-5 h-5 fill-current text-amber-300" />
-          <span>Enter Contest &amp; Claim Participation Pass</span>
-          <ArrowRight className="w-5 h-5" />
-        </button>
+        {onRestartTour && (
+          <button
+            onClick={onRestartTour}
+            className="py-3.5 px-5 rounded-2xl bg-[#023093] hover:bg-[#033bb8] text-white font-black text-xs sm:text-sm shadow-xl shadow-blue-900/50 hover:scale-[1.02] transition-all flex items-center justify-center gap-2 cursor-pointer brand-font"
+          >
+            <span>🍽️ Recommend Another Restaurant</span>
+          </button>
+        )}
       </div>
     </div>
   );
