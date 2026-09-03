@@ -1,0 +1,338 @@
+'use client';
+
+import React, { useState, useEffect, useCallback, useMemo } from 'react';
+import { Search, X, ArrowRight, ArrowLeft, Star, Sparkles, Utensils, Check, Flame, PlusCircle } from 'lucide-react';
+import { Restaurant, Dish } from '@/lib/db';
+
+export interface SpiceOption {
+  id: string;
+  name: string;
+  level: string;
+  icon: string;
+  description: string;
+}
+
+export const SPICE_LEVELS: SpiceOption[] = [
+  { id: 'mild', name: 'Mild & Makkhan', level: '1/5', icon: '🧈', description: 'Smooth butter & gentle aroma' },
+  { id: 'masaledaar', name: 'Masaledaar', level: '3/5', icon: '🌶️', description: 'Rich Indian spices & robust heat' },
+  { id: 'fire', name: 'Bakasur Fire', level: '5/5', icon: '🔥', description: 'Extreme spicy chili blast' }
+];
+
+interface StepDishProps {
+  restaurant: Restaurant;
+  selectedDish: Dish | { name: string; id?: number; price?: number } | null;
+  selectedSpice: SpiceOption;
+  onSelectDish: (dish: Dish | { name: string; id?: number; price?: number }) => void;
+  onSelectSpice: (spice: SpiceOption) => void;
+  onFeedBakasur: (customDishName?: string) => void;
+  onBack: () => void;
+}
+
+export const StepDish: React.FC<StepDishProps> = ({
+  restaurant,
+  selectedDish,
+  selectedSpice,
+  onSelectDish,
+  onSelectSpice,
+  onFeedBakasur,
+  onBack
+}) => {
+  const [dishes, setDishes] = useState<Dish[]>([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isLoading, setIsLoading] = useState(true);
+
+  // Fetch recommended dishes for the selected restaurant
+  const fetchDishes = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch(`/api/restaurants/${restaurant.id}/dishes`);
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setDishes(json.data);
+        // Auto-select first recommended dish if none selected yet
+        if (!selectedDish && json.data.length > 0) {
+          onSelectDish(json.data[0]);
+        }
+      }
+    } catch (err) {
+      console.error("Failed to fetch dishes", err);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [restaurant.id, selectedDish, onSelectDish]);
+
+  useEffect(() => {
+    fetchDishes();
+  }, [fetchDishes]);
+
+  // Filtered dishes based on search query
+  const filteredDishes = useMemo(() => {
+    if (!searchQuery.trim()) return dishes;
+    const q = searchQuery.toLowerCase().trim();
+    return dishes.filter(d => 
+      d.name.toLowerCase().includes(q) || 
+      (d.description && d.description.toLowerCase().includes(q))
+    );
+  }, [dishes, searchQuery]);
+
+  // Handle selecting an official dish
+  const handleSelectDish = (dish: Dish) => {
+    onSelectDish(dish);
+  };
+
+  // Handle selecting custom searched dish
+  const handleSelectCustomDish = (customName: string) => {
+    if (!customName.trim()) return;
+    const customItem = {
+      name: customName.trim(),
+      id: Math.floor(Math.random() * 90000) + 10000,
+      price: 150
+    };
+    onSelectDish(customItem);
+  };
+
+  const activeDishName = selectedDish?.name || '';
+  const isCustomDishSelected = selectedDish && !dishes.some(d => d.name.toLowerCase() === selectedDish.name.toLowerCase());
+
+  return (
+    <div className="w-full rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-2xl border border-slate-100 flex flex-col gap-4 text-slate-900">
+      {/* Top Header */}
+      <div className="text-left">
+        <div className="flex items-center justify-between gap-2 mb-1">
+          <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider">
+            STEP 2 OF 4 • PICK DISH AT {restaurant.name.toUpperCase()}
+          </span>
+          <span className="text-[11px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+            📍 {restaurant.area || restaurant.city}
+          </span>
+        </div>
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 brand-font">
+          {restaurant.name} Mein Kya Khilaoge?
+        </h2>
+        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+          Pick a signature dish recommended by {restaurant.name} or search any specialty:
+        </p>
+      </div>
+
+      {/* Dish Search Bar */}
+      <div className="relative">
+        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder={`🔍 Search menu or type any dish (e.g. ${dishes[0]?.name || 'Special Biryani'})...`}
+          className="w-full pl-10 pr-10 py-2.5 sm:py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:border-[#023093] focus:bg-white transition-all shadow-inner"
+        />
+        {searchQuery && (
+          <button
+            onClick={() => setSearchQuery('')}
+            type="button"
+            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 p-1"
+          >
+            ✕
+          </button>
+        )}
+      </div>
+
+      {/* 4 to 5 Recommended Hotel Dishes List */}
+      <div className="flex flex-col gap-2">
+        <div className="flex items-center justify-between text-xs">
+          <span className="font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+            <span>Recommended by {restaurant.name} ({filteredDishes.length} Dishes)</span>
+          </span>
+          {activeDishName && (
+            <span className="text-[11px] font-bold text-[#023093] truncate max-w-[180px]">
+              ✓ Selected: {activeDishName}
+            </span>
+          )}
+        </div>
+
+        <div className="flex flex-col gap-2 max-h-[220px] overflow-y-auto pr-1">
+          {isLoading && dishes.length === 0 ? (
+            <div className="flex flex-col gap-2">
+              {[1, 2, 3, 4].map(i => (
+                <div key={i} className="h-16 rounded-xl bg-slate-100 animate-pulse" />
+              ))}
+            </div>
+          ) : (
+            <>
+              {/* Option to feed typed custom dish if searching */}
+              {searchQuery.trim() && (
+                <div
+                  onClick={() => handleSelectCustomDish(searchQuery)}
+                  className={`p-2.5 sm:p-3 rounded-xl border-2 border-dashed transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                    isCustomDishSelected && selectedDish?.name.toLowerCase() === searchQuery.toLowerCase()
+                      ? 'border-[#023093] bg-blue-50/80 shadow-sm'
+                      : 'border-blue-300 bg-blue-50/40 hover:bg-blue-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center text-lg shrink-0 shadow-sm">
+                      🍲
+                    </div>
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-1.5">
+                        <h4 className="font-black text-xs sm:text-sm text-blue-950 brand-font truncate">
+                          Feed Custom Dish: &ldquo;{searchQuery}&rdquo;
+                        </h4>
+                        <span className="text-[10px] font-bold text-blue-700 bg-blue-100 px-1.5 py-0.2 rounded">
+                          Custom
+                        </span>
+                      </div>
+                      <p className="text-[10px] sm:text-[11px] text-slate-500 truncate">
+                        Feed Bakasur your custom chosen dish at {restaurant.name}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleSelectCustomDish(searchQuery);
+                    }}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                      isCustomDishSelected && selectedDish?.name.toLowerCase() === searchQuery.toLowerCase()
+                        ? 'bg-[#023093] text-white shadow-sm'
+                        : 'bg-white border border-blue-300 text-blue-700 hover:bg-blue-600 hover:text-white'
+                    }`}
+                  >
+                    {isCustomDishSelected && selectedDish?.name.toLowerCase() === searchQuery.toLowerCase()
+                      ? '✓ Selected'
+                      : '+ Feed This'}
+                  </button>
+                </div>
+              )}
+
+              {/* List of recommended dishes */}
+              {filteredDishes.length === 0 && !searchQuery.trim() ? (
+                <div className="p-4 text-center rounded-xl bg-slate-50 border border-slate-200">
+                  <p className="text-xs text-slate-500">No dishes available at this moment.</p>
+                </div>
+              ) : (
+                filteredDishes.map((dish) => {
+                  const isSelected = selectedDish?.name === dish.name;
+                  return (
+                    <div
+                      key={dish.id}
+                      onClick={() => handleSelectDish(dish)}
+                      className={`p-2.5 sm:p-3 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        isSelected
+                          ? 'border-2 border-[#023093] bg-blue-50/70 shadow-sm'
+                          : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50 bg-white'
+                      }`}
+                    >
+                      {/* Left info */}
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <div className="w-11 h-11 rounded-lg overflow-hidden shrink-0 border border-slate-200 bg-slate-100 flex items-center justify-center">
+                          {dish.image ? (
+                            <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
+                          ) : (
+                            <span className="text-lg">🍽️</span>
+                          )}
+                        </div>
+                        <div className="min-w-0">
+                          <div className="flex items-center gap-1.5 flex-wrap">
+                            <h4 className={`font-extrabold text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#023093]' : 'text-slate-900'}`}>
+                              {dish.name}
+                            </h4>
+                            <span className="text-[10px] font-bold text-slate-700 bg-slate-100 px-1.5 py-0.2 rounded">
+                              ₹{dish.price}
+                            </span>
+                            {dish.rating && (
+                              <span className="flex items-center text-[10px] font-bold text-amber-700 bg-amber-50 px-1 rounded">
+                                ★ {dish.rating}
+                              </span>
+                            )}
+                          </div>
+                          <p className="text-[10px] sm:text-[11px] text-slate-500 truncate mt-0.5">
+                            {dish.description || 'Special signature dish prepared with authentic spices.'}
+                          </p>
+                        </div>
+                      </div>
+
+                      {/* Right Select button */}
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleSelectDish(dish);
+                        }}
+                        className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 cursor-pointer ${
+                          isSelected
+                            ? 'bg-[#023093] text-white shadow-sm'
+                            : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                        }`}
+                      >
+                        {isSelected ? '✓ Selected' : 'Select'}
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Spice Level Selector */}
+      <div className="flex flex-col gap-1.5 pt-1">
+        <div className="flex items-center justify-between">
+          <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
+            <span>CHOOSE SPICE LEVEL</span>
+            <span>🌶️</span>
+          </label>
+          <span className="text-[11px] font-extrabold text-orange-600">
+            {selectedSpice.name} ({selectedSpice.level})
+          </span>
+        </div>
+
+        {/* 3 Spice Cards Side by Side */}
+        <div className="grid grid-cols-3 gap-2 sm:gap-3">
+          {SPICE_LEVELS.map((sp) => {
+            const isSelected = selectedSpice.id === sp.id;
+            return (
+              <button
+                key={sp.id}
+                onClick={() => onSelectSpice(sp)}
+                type="button"
+                className={`p-2.5 sm:p-3 rounded-xl text-center border transition-all cursor-pointer flex flex-col items-center justify-center gap-0.5 ${
+                  isSelected
+                    ? 'border-2 border-orange-500 bg-orange-50/90 shadow-sm text-orange-950 font-bold scale-[1.02]'
+                    : 'border-slate-200 hover:border-orange-300 hover:bg-slate-50 bg-white text-slate-700'
+                }`}
+              >
+                <span className="text-xl">{sp.icon}</span>
+                <span className="font-extrabold text-xs brand-font truncate w-full">{sp.name}</span>
+                <span className="text-[10px] text-slate-500 font-semibold">{sp.level}</span>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Navigation Footer */}
+      <div className="flex items-center gap-3 pt-1">
+        <button
+          onClick={onBack}
+          type="button"
+          className="px-5 py-2.5 sm:py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+        >
+          Back
+        </button>
+
+        <button
+          onClick={() => onFeedBakasur(activeDishName)}
+          disabled={!activeDishName.trim()}
+          type="button"
+          className="flex-1 py-2.5 sm:py-3 px-5 rounded-xl bg-[#023093] hover:bg-[#033bb8] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-900/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50"
+        >
+          <span>Feed Bakasur Now! 🍛</span>
+          <ArrowRight className="w-4 h-4" />
+        </button>
+      </div>
+    </div>
+  );
+};

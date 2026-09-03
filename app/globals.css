@@ -1,0 +1,131 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@import "tailwindcss";
+@import "leaflet/dist/leaflet.css";
+
+:root {
+  --brand: #023093;
+  --brand-hover: #033bb8;
+  --brand-glow: rgba(2, 48, 147, 0.35);
+  --brand-light: #e8eefc;
+  --navy: #060b24;
+  --dark: #0a0f2c;
+  --cyan: #00acc1;
+  --mint: #00c853;
+  --amber: #ff9800;
+  --card-bg: #ffffff;
+}
+
+body {
+  background-color: #05091e;
+  background-image: 
+    radial-gradient(circle at 15% 15%, rgba(2, 48, 147, 0.35) 0%, transparent 45%),
+    radial-gradient(circle at 85% 85%, rgba(0, 172, 193, 0.2) 0%, transparent 45%),
+    radial-gradient(circle at 50% 50%, rgba(6, 11, 36, 0.95) 0%, #030614 100%);
+  color: #0f172a;
+  min-height: 100vh;
+  font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, .brand-font {
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  letter-spacing: -0.02em;
+}
+
+/* Custom Pulsing & Glow Keyframes */
+@keyframes aurKhiloPulse {
+  0%, 100% {
+    transform: scale(1);
+    box-shadow: 0 0 20px rgba(2, 48, 147, 0.5), 0 0 40px rgba(0, 172, 193, 0.3);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 35px rgba(3, 59, 184, 0.8), 0 0 55px rgba(0, 172, 193, 0.6);
+  }
+}
+
+@keyframes gastriumGlow {
+  0%, 100% {
+    box-shadow: 0 0 20px rgba(0, 200, 83, 0.4);
+  }
+  50% {
+    box-shadow: 0 0 35px rgba(0, 200, 83, 0.8);
+  }
+}
+
+@keyframes floatBubble {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.aur-khilo-btn {
+  animation: aurKhiloPulse 1.8s infinite ease-in-out;
+}
+
+.gastrium-pulse {
+  animation: gastriumGlow 2s infinite ease-in-out;
+}
+
+.speech-bubble {
+  animation: floatBubble 3s infinite ease-in-out;
+}
+
+.spin-slow {
+  animation: spinSlow 12s linear infinite;
+}
+
+/* White Card Container Styles */
+.step-card {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.25), 0 0 20px rgba(2, 48, 147, 0.08);
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* Leaflet Map Overrides */
+.leaflet-container {
+  width: 100%;
+  height: 100%;
+  border-radius: 1.25rem;
+  background: #0b0f2a !important;
+}
+
+.leaflet-popup-content-wrapper {
+  background: #ffffff !important;
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+}
+
+.leaflet-popup-tip {
+  background: #ffffff !important;
+}
