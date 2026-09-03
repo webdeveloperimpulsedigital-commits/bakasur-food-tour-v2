@@ -112,32 +112,32 @@ export const StepContest: React.FC<StepContestProps> = ({
   };
 
   return (
-    <div className="w-full rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-2xl border border-slate-100 flex flex-col gap-4 sm:gap-5 text-slate-900 animate-in fade-in duration-300">
+    <div className="w-full flex flex-col gap-4 sm:gap-5 text-white animate-in fade-in duration-300">
       {/* Top Label */}
       <div className="text-left">
-        <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
+        <span className="text-[11px] font-black text-yellow-300 uppercase tracking-wider block mb-1">
           OFFICIAL TOUR PASS • VERIFIED
         </span>
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 brand-font">
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white brand-font">
           Aapka Tour Pass Ready Hai!
         </h2>
-        <p className="text-xs sm:text-sm text-slate-500 mt-1">
+        <p className="text-xs sm:text-sm text-blue-100 mt-1">
           Bakasur has savoured your recommendation and registered this stop for {restaurant.city}!
         </p>
       </div>
 
       {/* Official Tour Pass Ticket Card */}
-      <div className="rounded-2xl border-2 border-slate-200 bg-gradient-to-b from-slate-50 to-white p-4 sm:p-5 flex flex-col gap-3 shadow-md relative overflow-hidden">
+      <div className="rounded-2xl border-2 border-yellow-400 bg-white text-slate-900 p-4 sm:p-5 flex flex-col gap-3 shadow-xl relative overflow-hidden relative z-10">
         {/* Pass Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
           <div className="flex items-center gap-1.5">
             <span className="w-2.5 h-2.5 rounded-full bg-red-500" />
-            <span className="text-[11px] font-black text-slate-800 uppercase tracking-wider">
+            <span className="text-[11px] font-black text-slate-900 uppercase tracking-wider">
               BAKASUR FOOD TOUR PASS
             </span>
           </div>
 
-          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-[10px] font-black uppercase tracking-wider border border-emerald-300">
+          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider border border-emerald-300">
             ⚡ 1/1 VERIFIED
           </span>
         </div>
@@ -149,7 +149,7 @@ export const StepContest: React.FC<StepContestProps> = ({
               <span>📍 {restaurant.name}</span>
             </h3>
             <p className="text-xs text-slate-500 font-medium">
-              City: <span className="font-bold text-slate-800">{restaurant.city}</span>
+              City: <span className="font-bold text-slate-900">{restaurant.city}</span>
             </p>
           </div>
 
@@ -162,10 +162,10 @@ export const StepContest: React.FC<StepContestProps> = ({
         </div>
 
         {/* Dish & Spice Info */}
-        <div className="rounded-xl bg-white border border-slate-200/80 p-3 flex flex-col gap-1 text-xs">
+        <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 flex flex-col gap-1 text-xs">
           <div className="font-bold text-slate-900 flex items-center gap-1">
             <span>🍽 Signature Food:</span>
-            <span className="text-[#023093] font-extrabold">{dish.name}</span>
+            <span className="text-[#023093] font-black">{dish.name}</span>
           </div>
 
           <div className="flex items-center gap-2 text-[11px] text-slate-500 font-semibold pt-1">
@@ -190,20 +190,20 @@ export const StepContest: React.FC<StepContestProps> = ({
           <button
             onClick={() => setShowRegModal(true)}
             type="button"
-            className="text-xs font-bold text-[#023093] hover:underline flex items-center justify-center gap-1 py-1"
+            className="text-xs font-black text-[#023093] hover:underline flex items-center justify-center gap-1 py-1"
           >
             <span>🎁 Claim Food Tour Contest Entry</span>
-            <Sparkles className="w-3 h-3" />
+            <Sparkles className="w-3 h-3 text-yellow-500" />
           </button>
         )}
       </div>
 
       {/* Action Buttons Row */}
-      <div className="flex items-center gap-3 pt-2">
+      <div className="flex items-center gap-3 pt-2 relative z-10">
         <button
           onClick={onRestartTour}
           type="button"
-          className="px-4 sm:px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
+          className="px-4 sm:px-5 py-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap"
         >
           <RotateCcw className="w-4 h-4" />
           <span>Feed at Another Joint</span>
@@ -212,7 +212,7 @@ export const StepContest: React.FC<StepContestProps> = ({
         <button
           onClick={handleSharePass}
           type="button"
-          className="flex-1 py-3 px-5 rounded-xl bg-[#023093] hover:bg-[#033bb8] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-900/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer brand-font"
+          className="flex-1 py-3.5 px-5 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide"
         >
           <Share2 className="w-4 h-4" />
           <span>Share Pass on WhatsApp</span>

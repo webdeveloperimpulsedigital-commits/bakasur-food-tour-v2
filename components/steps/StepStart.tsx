@@ -13,115 +13,45 @@ interface StepStartProps {
 export const StepStart: React.FC<StepStartProps> = ({
   onStartTour,
   isLoading = false,
-  selectedCity = 'Pune',
-  selectedArea = 'FC Road'
 }) => {
   return (
-    <div className="w-full max-w-5xl mx-auto py-2 sm:py-6 flex flex-col items-center">
+    <div className="w-full flex flex-col justify-center gap-4 sm:gap-6 text-white">
       {/* Top Main Heading Section */}
-      <div className="text-center mb-6 sm:mb-8">
-        <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-white tracking-tight lowercase brand-font mb-3">
-          are you ready?
+      <div className="text-left">
+        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-white tracking-tight brand-font">
+          Are you ready? <span className="text-yellow-400">🚀</span>
         </h1>
-
-        {/* Badges Row */}
-        <div className="flex items-center justify-center gap-2 flex-wrap mb-3">
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-[#0d1430]/90 border border-slate-700/80 text-white text-xs font-extrabold uppercase tracking-wider shadow-md">
-            <span className="text-amber-400">⚡</span>
-            <span>GASTRIUM FOOD TOUR</span>
-          </div>
-
-          <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-blue-950/80 border border-blue-600/50 text-cyan-300 text-xs font-extrabold tracking-wide shadow-md">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping shrink-0" />
-            <span>📍 Live: {selectedArea ? `${selectedArea}, ` : ''}{selectedCity}</span>
-          </div>
-        </div>
-
-        <p className="text-sm sm:text-base text-slate-300 max-w-lg mx-auto font-medium">
-          Aapke sheher ka next spicy &amp; legendary food stop Bakasur ko batao.
+        <p className="text-xs sm:text-sm text-blue-100 mt-1 sm:mt-2 font-medium leading-relaxed">
+          Aapke sheher ka next spicy &amp; legendary food joint Bakasur ko batao.
         </p>
       </div>
 
-      {/* Main 2-Column Content Grid */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
-        {/* Left Column: Bakasur Mascot Hero Graphic */}
-        <div className="md:col-span-6 flex justify-center items-center">
-          <div className="relative w-full max-w-md aspect-square rounded-3xl overflow-hidden shadow-2xl border border-slate-700/50 bg-[#060b24]">
-            <img
-              src="/images/bakasur_hero.jpg"
-              alt="Bakasur Mascot"
-              className="w-full h-full object-cover object-center transform hover:scale-105 transition-transform duration-500"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-[#05091e]/80 via-transparent to-transparent pointer-events-none" />
-          </div>
+      {/* Bakasur is Hungry Card */}
+      <div className="rounded-2xl bg-white/10 hover:bg-white/[0.14] p-3.5 sm:p-5 border border-white/15 backdrop-blur-md flex items-center gap-3.5 sm:gap-4 transition-all shadow-md">
+        <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-tr from-yellow-500 to-amber-400 text-slate-950 shrink-0 shadow-md flex items-center justify-center text-xl sm:text-2xl font-bold">
+          👹
         </div>
-
-        {/* Right Column: Interaction Cards & Start Tour CTA */}
-        <div className="md:col-span-6 flex flex-col gap-4 max-w-md mx-auto w-full">
-          {/* Card 1: Bakasur is Hungry! */}
-          <div className="rounded-2xl bg-white/95 backdrop-blur-md p-4 sm:p-5 border border-slate-100 shadow-xl flex items-center gap-4 transition-all hover:shadow-2xl">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-amber-500 via-orange-500 to-red-500 p-0.5 shrink-0 shadow-md shadow-orange-500/30 flex items-center justify-center overflow-hidden">
-              <div className="w-full h-full bg-[#0d1430] rounded-[14px] flex items-center justify-center text-2xl">
-                👹
-              </div>
-            </div>
-            <div className="flex-1 min-w-0">
-              <h3 className="text-base sm:text-lg font-black text-slate-900 brand-font flex items-center gap-1.5">
-                <span>Bakasur is Hungry!</span>
-                <span className="text-base">🍗</span>
-              </h3>
-              <p className="text-xs sm:text-sm text-slate-500 leading-snug mt-0.5">
-                Send him to your city&apos;s spiciest, most legendary food joint.
-              </p>
-            </div>
-          </div>
-
-          {/* Card 2: Social Proof & Start Tour CTA */}
-          <div className="rounded-2xl bg-white/95 backdrop-blur-md p-5 sm:p-6 border border-slate-100 shadow-xl flex flex-col gap-4">
-            {/* Social Proof Header */}
-            <div>
-              <div className="flex items-center gap-2 mb-1.5">
-                {/* Avatar Cluster */}
-                <div className="flex -space-x-2 overflow-hidden">
-                  <img
-                    className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover"
-                    src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&auto=format&fit=crop&q=80"
-                    alt="Foodie 1"
-                  />
-                  <img
-                    className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover"
-                    src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&auto=format&fit=crop&q=80"
-                    alt="Foodie 2"
-                  />
-                  <img
-                    className="inline-block h-7 w-7 rounded-full ring-2 ring-white object-cover"
-                    src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=100&auto=format&fit=crop&q=80"
-                    alt="Foodie 3"
-                  />
-                  <div className="inline-flex items-center justify-center h-7 px-1.5 rounded-full ring-2 ring-white bg-[#023093] text-white text-[10px] font-black">
-                    +4.2k
-                  </div>
-                </div>
-                <h4 className="font-extrabold text-sm sm:text-base text-slate-900 brand-font">
-                  You and 50,000 foodies
-                </h4>
-              </div>
-              <p className="text-xs text-slate-500">
-                ready to send Bakasur on this epic spice food tour
-              </p>
-            </div>
-
-            {/* Big Start Tour Button */}
-            <button
-              onClick={onStartTour}
-              disabled={isLoading}
-              className="w-full py-3.5 sm:py-4 px-6 rounded-xl bg-[#023093] hover:bg-[#033bb8] text-white font-extrabold text-base shadow-lg shadow-blue-900/40 hover:shadow-xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer brand-font"
-            >
-              <span>Start Tour</span>
-              <span className="text-base">🚀</span>
-            </button>
-          </div>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-xs sm:text-base font-black text-yellow-300 brand-font flex items-center gap-1">
+            <span>Bakasur is Hungry!</span>
+            <span>🍗</span>
+          </h3>
+          <p className="text-[11px] sm:text-sm text-blue-100 leading-snug mt-0.5 sm:mt-1">
+            Feed him your city&apos;s spiciest, most legendary food joint.
+          </p>
         </div>
+      </div>
+
+      {/* Start Tour CTA Button */}
+      <div className="pt-1 sm:pt-2">
+        <button
+          onClick={onStartTour}
+          disabled={isLoading}
+          className="w-full py-3.5 sm:py-4 px-6 rounded-2xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-sm sm:text-base lg:text-lg shadow-xl shadow-yellow-500/25 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.99] transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide"
+        >
+          <span>Start Tour</span>
+          <span>🚀</span>
+        </button>
       </div>
     </div>
   );

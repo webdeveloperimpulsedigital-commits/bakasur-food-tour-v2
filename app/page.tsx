@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState, useEffect, useCallback } from 'react';
-import { Navbar } from '@/components/Navbar';
 import { BakasurVideoPlayer } from '@/components/BakasurVideoPlayer';
 import { StepStart } from '@/components/steps/StepStart';
 import { StepCity, CITIES_LIST, CityItem } from '@/components/steps/StepCity';
@@ -41,7 +40,7 @@ export default function CampaignPage() {
   const [feastingStage, setFeastingStage] = useState<1 | 2 | 3>(1);
 
   // Video State
-  const [videoUrl, setVideoUrl] = useState<string>('/uploads/videos/1.mp4');
+  const [videoUrl, setVideoUrl] = useState<string>('/uploads/videos/video-frame-1.mp4');
 
   // Initialize Session ID & Auto Detect Live Location
   useEffect(() => {
@@ -131,7 +130,7 @@ export default function CampaignPage() {
         });
       }
     } catch {
-      // Audio autoplay policy fallback
+      // Audio autoplay fallback
     }
   }, [soundEnabled]);
 
@@ -140,7 +139,7 @@ export default function CampaignPage() {
     playSound('click');
     setFeastingStage(1);
     setCurrentStep('city');
-    setVideoUrl('/uploads/videos/1.mp4');
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
   // Transitions: Step 1 (City & Hotel Selection) -> Step 3 (Dish)
@@ -148,10 +147,10 @@ export default function CampaignPage() {
     playSound('click');
     setFeastingStage(1);
     setCurrentStep('dish');
-    setVideoUrl('/uploads/videos/1.mp4');
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
-  // Transitions: Dish -> Feasting (Step 4) - Stage 1 (20%)
+  // Transitions: Dish -> Feasting (Step 4) - Stage 1 (20% Meter)
   const handleFeedBakasur = async (customDishName?: string) => {
     playSound('bite');
     const finalDish = customDishName
@@ -182,7 +181,7 @@ export default function CampaignPage() {
     }
   };
 
-  // Transitions: Multi-Stage Feasting Updates (Stage 1 -> Stage 2 -> Stage 3)
+  // Transitions: Aur Khilao Multi-Stage Feasting (Stage 1 -> Stage 2 -> Stage 3)
   const handleFeastingStageChange = (stage: 1 | 2 | 3) => {
     setFeastingStage(stage);
     if (stage === 1) {
@@ -205,163 +204,158 @@ export default function CampaignPage() {
   const handleGiveGastrium = () => {
     playSound('relief');
     setCurrentStep('relief_countdown');
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
   // Transitions: 6s Countdown complete -> Relief Complete (Step 7)
   const handleCountdownComplete = () => {
     playSound('fanfare');
     setCurrentStep('relief_done');
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
   // Transitions: Relief Complete -> Official Pass (Step 8)
   const handleGetOfficialPass = () => {
     playSound('fanfare');
     setCurrentStep('pass');
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
   // Restart Tour
   const handleRestartTour = () => {
     playSound('click');
-    const newSess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
-    localStorage.setItem('bakasur_session_id', newSess);
-    setSessionId(newSess);
-    setSelectedRestaurant(null);
-    setSelectedDish(null);
-    setFeastingStage(1);
     setCurrentStep('start');
-    setVideoUrl('/uploads/videos/1.mp4');
+    setSelectedRestaurant(null);
+    const newSess = `sess_${Date.now()}_${Math.random().toString(36).substring(2, 8)}`;
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('bakasur_session_id', newSess);
+    }
+    setSessionId(newSess);
+    setVideoUrl('/uploads/videos/video-frame-1.mp4');
   };
 
   return (
-    <div className="min-h-screen flex flex-col justify-between text-slate-900 bg-[#05091e]">
-      {/* Top Header Navbar */}
-      <Navbar
-        soundEnabled={soundEnabled}
-        onToggleSound={() => setSoundEnabled(!soundEnabled)}
-      />
+    <div className="h-screen max-h-screen w-full flex flex-col lg:flex-row overflow-hidden bg-slate-950">
+      {/* Left 50% Section: Full Edge-to-Edge Bakasur Video Player */}
+      <div className="w-full lg:w-1/2 h-[48vh] sm:h-[50vh] lg:h-full relative overflow-hidden bg-black flex items-center justify-center shrink-0">
+        <BakasurVideoPlayer
+          videoUrl={videoUrl}
+          stageName={currentStep}
+          feastingStage={feastingStage}
+          dishName={
+            currentStep === 'start'
+              ? `Ready in ${selectedCity.name}`
+              : currentStep === 'city'
+              ? `Bakasur in ${selectedCity.name}`
+              : currentStep === 'dish'
+              ? (selectedDish ? `${selectedDish.name} at ${selectedRestaurant?.name}` : `At ${selectedRestaurant?.name}`)
+              : selectedDish?.name
+          }
+          spice={selectedSpice}
+          soundEnabled={soundEnabled}
+          onToggleSound={() => setSoundEnabled(!soundEnabled)}
+        />
+      </div>
 
-      {/* Main Campaign Stage */}
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-4 flex flex-col justify-center">
-        {currentStep === 'start' ? (
-          /* Landing Screen (00:00 - 00:01) */
-          <StepStart
-            onStartTour={handleStartTour}
-            selectedCity={selectedCity.name}
-            selectedArea={selectedArea}
-          />
-        ) : currentStep === 'relief_countdown' ? (
-          /* 6-Second Gastrium Relief Active Countdown Screen (00:33 - 00:38) */
-          <StepRelief
-            restaurant={selectedRestaurant || { id: 1, name: 'Goodluck Cafe', city: selectedCity.name, address: 'FC Road', area: 'Deccan', rating: 4.8, image: '', description: '', is_campaign_active: 1, total_visits: 1200, status: 'active', latitude: 0, longitude: 0 }}
-            dish={selectedDish || { name: 'Bun Omelette' }}
-            spice={selectedSpice}
-            isCountdownDone={false}
-            onCountdownComplete={handleCountdownComplete}
-            onGetOfficialPass={handleGetOfficialPass}
-          />
-        ) : (
-          /* Split Screen Layout for Steps 1, 2, 3, 4, 5, 7, 8 */
-          <div className="w-full grid grid-cols-1 md:grid-cols-12 gap-6 lg:gap-8 items-center">
-            {/* Left Column: Bakasur Video Player & Mascot Visual */}
-            <div className="md:col-span-6 flex justify-center items-center">
-              <div className="w-full max-w-md">
-                <BakasurVideoPlayer
-                  videoUrl={videoUrl}
-                  stageName={currentStep}
-                  feastingStage={feastingStage}
-                  dishName={
-                    currentStep === 'city'
-                      ? `Bakasur in ${selectedCity.name}`
-                      : currentStep === 'dish'
-                      ? (selectedDish ? `${selectedDish.name} at ${selectedRestaurant?.name}` : `At ${selectedRestaurant?.name}`)
-                      : selectedDish?.name
-                  }
-                  spice={selectedSpice}
-                  soundEnabled={soundEnabled}
-                />
-              </div>
-            </div>
+      {/* Right 50% Section: Full Edge-to-Edge Royal Blue Content Section */}
+      <div className="w-full lg:w-1/2 flex-1 lg:h-full relative bg-gradient-to-br from-[#023093] via-[#02287e] to-[#011a54] text-white flex flex-col justify-between overflow-y-auto p-4 sm:p-6 md:p-8 lg:p-10 -mt-6 sm:-mt-8 lg:mt-0 rounded-t-[2rem] sm:rounded-t-[2.5rem] lg:rounded-none border-t-2 border-white/20 lg:border-t-0 lg:border-l-2 lg:border-blue-400/20 backdrop-blur-xl shadow-2xl z-20">
+        {/* Mobile Pull Bar Indicator */}
+        <div className="w-10 h-1 rounded-full bg-white/30 mx-auto mb-1 lg:hidden shrink-0" />
 
-            {/* Right Column: White Interactive Step Card */}
-            <div className="md:col-span-6 flex justify-center items-center">
-              <div className="w-full max-w-lg">
-                {currentStep === 'city' && (
-                  /* Step 1: Auto Location Detect + Nearby Recommended Hotels + Search */
-                  <StepCity
-                    selectedCity={selectedCity.name}
-                    selectedArea={selectedArea}
-                    userCoords={{ lat: selectedCity.lat, lng: selectedCity.lng }}
-                    selectedRestaurant={selectedRestaurant}
-                    onSelectCity={(city) => setSelectedCity(city)}
-                    onSelectArea={(area) => setSelectedArea(area)}
-                    onSelectRestaurant={(rest) => setSelectedRestaurant(rest)}
-                    onNext={handleCityNext}
-                    onBack={() => setCurrentStep('start')}
-                  />
-                )}
+        {/* Decorative Background Glows */}
+        <div className="absolute top-0 right-0 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
+        <div className="absolute bottom-0 left-0 w-64 h-64 bg-yellow-400/10 rounded-full blur-3xl pointer-events-none" />
 
-                {currentStep === 'dish' && selectedRestaurant && (
-                  /* Step 2: Pick Recommended Hotel Dish & Spice */
-                  <StepDish
-                    restaurant={selectedRestaurant}
-                    selectedDish={selectedDish}
-                    selectedSpice={selectedSpice}
-                    onSelectDish={(d) => setSelectedDish(d)}
-                    onSelectSpice={(sp) => setSelectedSpice(sp)}
-                    onFeedBakasur={handleFeedBakasur}
-                    onBack={() => setCurrentStep('city')}
-                  />
-                )}
+        {/* Interactive Step Content Area */}
+        <main className="flex-1 w-full max-w-lg mx-auto flex flex-col justify-center min-h-0 py-1 sm:py-3 relative z-10">
+          {currentStep === 'start' && (
+            /* Step 0: Landing / Start Screen */
+            <StepStart
+              onStartTour={handleStartTour}
+            />
+          )}
 
-                {(currentStep === 'eating' || currentStep === 'heartburn') && selectedRestaurant && (
-                  /* Step 4 & Step 5: Feasting & Heartburn Multi-Stage */
-                  <StepEating
-                    restaurant={selectedRestaurant}
-                    dish={selectedDish || { name: 'Bun Omelette' }}
-                    spice={selectedSpice}
-                    sessionId={sessionId}
-                    feastingStage={feastingStage}
-                    onFeastingStageChange={handleFeastingStageChange}
-                    isHeartburnStage={currentStep === 'heartburn'}
-                    onProceedToHeartburn={handleProceedToHeartburn}
-                    onGiveGastrium={handleGiveGastrium}
-                    onBackToDish={() => setCurrentStep('dish')}
-                    onPlaySound={playSound}
-                  />
-                )}
+          {currentStep === 'city' && (
+            /* Step 1: Auto Location Detect + Nearby Recommended Hotels + Search */
+            <StepCity
+              selectedCity={selectedCity.name}
+              selectedArea={selectedArea}
+              userCoords={{ lat: selectedCity.lat, lng: selectedCity.lng }}
+              selectedRestaurant={selectedRestaurant}
+              onSelectCity={(city) => setSelectedCity(city)}
+              onSelectArea={(area) => setSelectedArea(area)}
+              onSelectRestaurant={(rest) => setSelectedRestaurant(rest)}
+              onNext={handleCityNext}
+              onBack={() => setCurrentStep('start')}
+            />
+          )}
 
-                {currentStep === 'relief_done' && selectedRestaurant && (
-                  /* Step 7: Relief Complete */
-                  <StepRelief
-                    restaurant={selectedRestaurant}
-                    dish={selectedDish || { name: 'Bun Omelette' }}
-                    spice={selectedSpice}
-                    isCountdownDone={true}
-                    onCountdownComplete={handleCountdownComplete}
-                    onGetOfficialPass={handleGetOfficialPass}
-                  />
-                )}
+          {currentStep === 'dish' && selectedRestaurant && (
+            /* Step 2: Pick Recommended Hotel Dish & Spice */
+            <StepDish
+              restaurant={selectedRestaurant}
+              selectedDish={selectedDish}
+              selectedSpice={selectedSpice}
+              onSelectDish={(d) => setSelectedDish(d)}
+              onSelectSpice={(sp) => setSelectedSpice(sp)}
+              onFeedBakasur={handleFeedBakasur}
+              onBack={() => setCurrentStep('city')}
+            />
+          )}
 
-                {currentStep === 'pass' && selectedRestaurant && (
-                  /* Step 8: Official Tour Pass & Share */
-                  <StepContest
-                    sessionId={sessionId}
-                    restaurant={selectedRestaurant}
-                    dish={selectedDish || { name: 'Bun Omelette' }}
-                    spice={selectedSpice}
-                    onRestartTour={handleRestartTour}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-      </main>
+          {(currentStep === 'eating' || currentStep === 'heartburn') && selectedRestaurant && (
+            /* Step 4 & Step 5: Feasting & Heartburn Multi-Stage */
+            <StepEating
+              restaurant={selectedRestaurant}
+              dish={selectedDish || { name: 'Bun Omelette' }}
+              spice={selectedSpice}
+              sessionId={sessionId}
+              feastingStage={feastingStage}
+              onFeastingStageChange={handleFeastingStageChange}
+              isHeartburnStage={currentStep === 'heartburn'}
+              onProceedToHeartburn={handleProceedToHeartburn}
+              onGiveGastrium={handleGiveGastrium}
+              onBackToDish={() => setCurrentStep('dish')}
+              onPlaySound={playSound}
+            />
+          )}
 
-      {/* Subtle Footer */}
-      <footer className="w-full py-3 px-4 text-center text-[11px] text-slate-400 border-t border-slate-800/40 bg-[#030614]/80">
-        <p>© 2026 Bakasur Ka Food Tour • Powered by Gastrium Antacid</p>
-      </footer>
+          {currentStep === 'relief_countdown' && (
+            /* Step 6: 6-Second Gastrium Relief Active Countdown Screen */
+            <StepRelief
+              restaurant={selectedRestaurant || { id: 1, name: 'Goodluck Cafe', city: selectedCity.name, address: 'FC Road', area: 'Deccan', rating: 4.8, image: '', description: '', is_campaign_active: 1, total_visits: 1200, status: 'active', latitude: 0, longitude: 0 }}
+              dish={selectedDish || { name: 'Bun Omelette' }}
+              spice={selectedSpice}
+              isCountdownDone={false}
+              onCountdownComplete={handleCountdownComplete}
+              onGetOfficialPass={handleGetOfficialPass}
+            />
+          )}
+
+          {currentStep === 'relief_done' && selectedRestaurant && (
+            /* Step 7: Relief Complete */
+            <StepRelief
+              restaurant={selectedRestaurant}
+              dish={selectedDish || { name: 'Bun Omelette' }}
+              spice={selectedSpice}
+              isCountdownDone={true}
+              onCountdownComplete={handleCountdownComplete}
+              onGetOfficialPass={handleGetOfficialPass}
+            />
+          )}
+
+          {currentStep === 'pass' && selectedRestaurant && (
+            /* Step 8: Official Tour Pass & Share */
+            <StepContest
+              sessionId={sessionId}
+              restaurant={selectedRestaurant}
+              dish={selectedDish || { name: 'Bun Omelette' }}
+              spice={selectedSpice}
+              onRestartTour={handleRestartTour}
+            />
+          )}
+        </main>
+      </div>
     </div>
   );
 }
