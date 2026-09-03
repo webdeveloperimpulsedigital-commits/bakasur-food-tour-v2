@@ -59,36 +59,36 @@ export const StepEating: React.FC<StepEatingProps> = ({
     1: {
       title: 'Pehli Bhookh (Appetite Started)',
       dialogue: '😋 Mmm, delicious! But I\'m still hungry... Mujhe aur khilao! 🤤',
-      subtitle: 'Bakasur tasted the first bites of ' + dish.name + '! Appetite is warming up.',
+      subtitle: 'Bakasur finished the 20% portion of ' + dish.name + '! He is waiting for more food.',
       statusColor: 'text-amber-500',
       badgeBg: 'bg-amber-100 text-amber-800 border-amber-300',
       progressBg: 'from-amber-500 via-orange-400 to-yellow-300',
-      ctaText: '🍽️ AUR KHILAO',
-      ctaSubtext: '👆 Click "AUR KHILAO" to feed Bakasur the next course!',
+      ctaText: '🍽️ AUR KHILAO (FEED 2ND DISH)',
+      ctaSubtext: '👆 20% finished! Click "AUR KHILAO" to feed Bakasur the next dish (45%)!',
       mascotEmoji: '😋',
-      mascotMood: 'Hungry & Ready'
+      mascotMood: 'Waiting for More Food'
     },
     2: {
       title: 'Pel Ke Bhookh (Going Strong)',
       dialogue: '🍗 Mazedaar! Par pet abhi bhi nahi bhara... Aur lao!',
-      subtitle: 'Bakasur is gobbling down the spices fast! He still wants more food.',
+      subtitle: 'Bakasur gobbled 45% food! His monster appetite demands the final portion.',
       statusColor: 'text-orange-500',
       badgeBg: 'bg-orange-100 text-orange-800 border-orange-300',
       progressBg: 'from-orange-500 via-amber-400 to-yellow-400',
-      ctaText: '🍽️ AUR KHILAO (MORE FOOD!)',
-      ctaSubtext: '👆 Click "AUR KHILAO" to feed him to maximum capacity!',
+      ctaText: '🍽️ AUR KHILAO (FEED 3RD DISH)',
+      ctaSubtext: '👆 45% devoured! Click "AUR KHILAO" to feed him to maximum capacity (100%)!',
       mascotEmoji: '🤤',
-      mascotMood: 'Gobbling Fast'
+      mascotMood: 'Waiting for More Food'
     },
     3: {
       title: 'Pet Phat Gaya! (Acidity Attack 🔥)',
       dialogue: '🔥🔥 ARRE BAAP RE! Masala bohot zyada ho gaya! Pet mein aag lag gayi... Bachao! Help karo!',
-      subtitle: 'Too much intense spice triggered massive heartburn! Give Bakasur Gastrium fast antacid!',
+      subtitle: '100% Capacity! Too much intense spice triggered massive heartburn! Give Bakasur Gastrium fast antacid!',
       statusColor: 'text-red-500',
       badgeBg: 'bg-red-100 text-red-800 border-red-300 animate-pulse',
       progressBg: 'from-red-600 via-rose-500 to-orange-500',
       ctaText: '💊 GIVE GASTRIUM TO BAKASUR ⚡',
-      ctaSubtext: '🚨 Neutralize heartburn and acidity in 6 seconds with Gastrium!',
+      ctaSubtext: '🚨 100% Acidity Overload! Neutralize heartburn in 6 seconds with Gastrium!',
       mascotEmoji: '🔥',
       mascotMood: 'Acidity Overload!'
     }

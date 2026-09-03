@@ -30,6 +30,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMuted, setIsMuted] = useState<boolean>(!soundEnabled);
+  const [isVideoEnded, setIsVideoEnded] = useState<boolean>(false);
 
   // Sync mute state
   useEffect(() => {
@@ -41,6 +42,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
 
   // Autoplay on video load / URL change
   useEffect(() => {
+    setIsVideoEnded(false);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.muted = !soundEnabled;
@@ -59,6 +61,14 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
       });
     }
   }, [videoUrl, stageName, feastingStage, soundEnabled]);
+
+  const handleVideoEnded = () => {
+    setIsVideoEnded(true);
+    setIsPlaying(false);
+    if (onVideoEnded) {
+      onVideoEnded();
+    }
+  };
 
   const togglePlay = () => {
     if (!videoRef.current) return;
