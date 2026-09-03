@@ -79,6 +79,8 @@ export const StepCity: React.FC<StepCityProps> = ({
       async (pos) => {
         const { latitude, longitude, accuracy } = pos.coords;
         const accMeters = Math.round(accuracy || 20);
+        setUserCoords({ lat: latitude, lng: longitude });
+
         try {
           const res = await fetch(`/api/location?lat=${latitude}&lng=${longitude}`);
           const json = await res.json();
@@ -109,7 +111,7 @@ export const StepCity: React.FC<StepCityProps> = ({
           }
         } catch {
           setLocationStatus(`📍 Live GPS Active • Pune (±${accMeters}m)`);
-          setDetectedLocalityLabel('FC Road, Deccan, Pune');
+          setDetectedLocalityLabel('Pune, Maharashtra');
         } finally {
           setIsDetectingLocation(false);
         }
