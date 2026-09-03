@@ -28,6 +28,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState<boolean>(true);
   const [isMuted, setIsMuted] = useState<boolean>(!soundEnabled);
+  const [isVideoEnded, setIsVideoEnded] = useState<boolean>(false);
 
   // Sync mute state
   useEffect(() => {
@@ -39,6 +40,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
 
   // Restart & play on video URL change
   useEffect(() => {
+    setIsVideoEnded(false);
     if (videoRef.current) {
       videoRef.current.currentTime = 0;
       videoRef.current.load();
@@ -49,6 +51,14 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
       });
     }
   }, [videoUrl, stageName, feastingStage]);
+
+  const handleVideoEnded = () => {
+    setIsVideoEnded(true);
+    setIsPlaying(false);
+    if (onVideoEnded) {
+      onVideoEnded();
+    }
+  };
 
   const togglePlay = () => {
     if (!videoRef.current) return;
@@ -83,12 +93,12 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
           {feastingStage === 1 ? (
             <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-[11px] font-black shadow-lg border border-amber-300">
               <span>😋</span>
-              <span>20% EATEN • STILL HUNGRY!</span>
+              <span>{isVideoEnded ? '20% EATEN • WAITING FOR FOOD!' : '20% EATING...'}</span>
             </div>
           ) : feastingStage === 2 ? (
             <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-orange-500 text-white text-[11px] font-black shadow-lg border border-orange-300 animate-pulse">
               <span>🤤</span>
-              <span>45% GOBBLED • WANT MORE!</span>
+              <span>{isVideoEnded ? '45% GOBBLED • STILL HUNGRY!' : '45% GOBBLING...'}</span>
             </div>
           ) : (
             <div className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-red-600 text-white text-[11px] font-black shadow-lg border border-red-400 animate-bounce">
@@ -160,14 +170,13 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
             src={videoUrl}
             playsInline
             autoPlay
-            loop
             muted={isMuted}
-            onEnded={onVideoEnded}
+            onEnded={handleVideoEnded}
             className="w-full h-full object-cover object-center"
           />
 
           {/* Dynamic Floating Comic Tags based on Feasting Stage */}
-          {isEatingStage && (
+          {isEatingStage && !isVideoEnded && (
             <>
               {feastingStage === 1 && (
                 <>
@@ -246,8 +255,75 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
             </>
           )}
 
-          {/* Play/Pause Button on Hover */}
-          {!isPlaying && (
+          {/* Waiting for More Food Overlay when Video Finishes Playing */}
+          {isEatingStage && isVideoEnded && (
+            <div className="absolute inset-0 z-30 bg-gradient-to-t from-black/90 via-black/60 to-black/30 backdrop-blur-[2px] flex flex-col items-center justify-center p-5 sm:p-6 text-center animate-in fade-in duration-300">
+              {feastingStage === 1 ? (
+                <div className="flex flex-col items-center gap-2.5 max-w-xs">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-amber-500/20 border-2 border-amber-400 flex items-center justify-center text-3xl shadow-lg shadow-amber-500/30 animate-bounce">
+                    😋
+                  </div>
+                  
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-black uppercase tracking-wider shadow-md">
+                    <span>🍽️ 20% EATEN • WAITING FOR FOOD!</span>
+                  </div>
+
+                  <div className="rounded-2xl bg-white/15 backdrop-blur-md p-3 border border-white/25 text-white shadow-xl">
+                    <p className="text-xs sm:text-sm font-black leading-snug">
+                      &ldquo;Mmm, delicious! But I&apos;m still hungry... Mujhe aur khilao! 🤤&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-500 text-white text-[11px] font-black uppercase tracking-wider shadow-lg shadow-orange-900/50 animate-pulse border border-amber-300/60">
+                    <span>👇 Click &ldquo;AUR KHILAO&rdquo; Below 👇</span>
+                  </div>
+                </div>
+              ) : feastingStage === 2 ? (
+                <div className="flex flex-col items-center gap-2.5 max-w-xs">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-orange-500/20 border-2 border-orange-400 flex items-center justify-center text-3xl shadow-lg shadow-orange-500/30 animate-bounce">
+                    🤤
+                  </div>
+
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-orange-500 text-white text-xs font-black uppercase tracking-wider shadow-md">
+                    <span>🍗 45% GOBBLED • STILL HUNGRY!</span>
+                  </div>
+
+                  <div className="rounded-2xl bg-white/15 backdrop-blur-md p-3 border border-white/25 text-white shadow-xl">
+                    <p className="text-xs sm:text-sm font-black leading-snug">
+                      &ldquo;Mazedaar! Par pet abhi bhi nahi bhara... Aur lao!&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-orange-600 to-amber-500 text-white text-[11px] font-black uppercase tracking-wider shadow-lg shadow-orange-900/50 animate-pulse border border-orange-300/60">
+                    <span>👇 Click &ldquo;AUR KHILAO&rdquo; Below 👇</span>
+                  </div>
+                </div>
+              ) : (
+                <div className="flex flex-col items-center gap-2.5 max-w-xs">
+                  <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-full bg-red-500/20 border-2 border-red-500 flex items-center justify-center text-3xl shadow-lg shadow-red-500/30 animate-bounce">
+                    🔥
+                  </div>
+
+                  <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-600 text-white text-xs font-black uppercase tracking-wider shadow-md animate-pulse">
+                    <span>🚨 100% ACIDITY OVERLOAD!</span>
+                  </div>
+
+                  <div className="rounded-2xl bg-red-950/80 backdrop-blur-md p-3 border border-red-500/40 text-amber-200 shadow-xl">
+                    <p className="text-xs sm:text-sm font-black leading-snug">
+                      &ldquo;Pet mein aag lag gayi! Give me Gastrium immediately!&rdquo;
+                    </p>
+                  </div>
+
+                  <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 via-teal-600 to-[#023093] text-white text-[11px] font-black uppercase tracking-wider shadow-lg shadow-emerald-900/50 animate-bounce border border-emerald-300/60">
+                    <span>👇 Click &ldquo;GIVE GASTRIUM&rdquo; Below 👇</span>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Play/Pause Button on Hover if manual pause */}
+          {!isPlaying && !isVideoEnded && (
             <button
               onClick={togglePlay}
               className="absolute z-20 w-14 h-14 rounded-full bg-[#023093]/90 text-white flex items-center justify-center shadow-2xl hover:scale-110 transition-transform cursor-pointer"
