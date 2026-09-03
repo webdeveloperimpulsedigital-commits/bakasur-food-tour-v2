@@ -69,23 +69,21 @@ export const StepMap: React.FC<StepMapProps> = ({
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 uppercase tracking-wider">
+          <div className="flex items-center gap-1.5 text-xs font-bold text-blue-600 uppercase tracking-wider">
             <Sparkles className="w-3.5 h-3.5" />
             <span>Collective Outcome</span>
           </div>
-          <h2 className="text-xl sm:text-3xl font-black text-white brand-font">
-            Gastrium Food Tour Map 🗺️
-          </h2>
+          <h2 className="text-xl sm:text-2xl font-black text-white brand-font">Global Campaign Map</h2>
         </div>
 
         <div className="flex items-center gap-1 px-3 py-1 rounded-full bg-blue-600/20 border border-blue-400/40 text-xs text-cyan-300 font-extrabold">
           <Flame className="w-3.5 h-3.5 text-cyan-400 fill-cyan-400" />
-          <span>{totalVisits.toLocaleString()}+ Contributions</span>
+          <span>{totalVisits.toLocaleString()}+ Visits</span>
         </div>
       </div>
 
-      <p className="text-xs sm:text-sm text-blue-200/80 leading-relaxed">
-        Every foodie recommendation submitted is indexed into the live Gastrium Food Tour Map across India! Click on any spot to view recommended dishes and tour stops.
+      <p className="text-xs text-blue-200/70">
+        Every foodie who takes the tour adds to the live Bakasur Food Map across India! Click on any spot to view legendary dishes and total food-tour visits.
       </p>
 
       {/* City Filter Pills */}
@@ -98,11 +96,10 @@ export const StepMap: React.FC<StepMapProps> = ({
               const match = points.find(p => city === 'All' || p.city.toLowerCase() === city.toLowerCase());
               if (match) setActivePoint(match);
             }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${
-              selectedCityFilter === city
-                ? 'bg-gradient-to-r from-[#023093] to-[#00acc1] text-white shadow-md shadow-blue-900/40'
-                : 'bg-[#101642]/80 border border-[#023093]/40 text-blue-200/80 hover:text-white'
-            }`}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold shrink-0 transition-all cursor-pointer ${selectedCityFilter === city
+                ? 'bg-[#023093] text-white shadow-sm'
+                : 'bg-white border border-slate-200 text-slate-700 hover:bg-slate-50'
+              }`}
           >
             {city === 'All' ? 'All India 🇮🇳' : city}
           </button>
@@ -110,19 +107,15 @@ export const StepMap: React.FC<StepMapProps> = ({
       </div>
 
       {/* Interactive Visual Map Container */}
-      <div className="relative w-full h-80 sm:h-96 rounded-3xl overflow-hidden border-2 border-[#023093]/60 bg-[#080d24] shadow-2xl flex flex-col justify-between p-4">
-        {/* Background stylized India Grid / Radar lines */}
-        <div className="absolute inset-0 bg-[radial-gradient(#00acc1_1px,transparent_1px)] [background-size:24px_24px] opacity-20 pointer-events-none" />
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-[#023093]/30 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="relative w-full h-80 sm:h-96 rounded-3xl overflow-hidden border border-slate-200 bg-slate-50 shadow-lg flex flex-col justify-between p-4">
         {/* Map Top Status Pill */}
         <div className="relative z-10 flex items-center justify-between">
-          <span className="px-3 py-1 rounded-full bg-[#101642]/90 backdrop-blur-md border border-[#023093]/50 text-[11px] text-cyan-200 flex items-center gap-1.5 font-bold">
-            <span className="w-2 h-2 rounded-full bg-cyan-400 animate-ping" />
+          <span className="px-3 py-1 rounded-full bg-white/90 backdrop-blur-md border border-slate-200 text-[11px] text-slate-700 flex items-center gap-1.5 font-bold shadow-sm">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping" />
             <span>Live Food-Tour Trail</span>
           </span>
 
-          <span className="text-[11px] text-blue-200/70 bg-[#101642]/90 px-2.5 py-1 rounded-full border border-[#023093]/40 font-semibold">
+          <span className="text-[11px] text-slate-500 bg-white/90 px-2.5 py-1 rounded-full border border-slate-200 font-semibold shadow-sm">
             {filteredPoints.length} Live Food Spots
           </span>
         </div>
@@ -135,11 +128,10 @@ export const StepMap: React.FC<StepMapProps> = ({
               <button
                 key={point.id}
                 onClick={() => setActivePoint(point)}
-                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer backdrop-blur-md ${
-                  isSelected
-                    ? 'bg-gradient-to-r from-[#023093] to-[#00acc1] border-cyan-300 text-white shadow-xl shadow-blue-900/50 scale-105'
-                    : 'bg-[#101642]/80 border-[#023093]/40 hover:border-cyan-400/50 text-white'
-                }`}
+                className={`p-2.5 rounded-2xl border text-left transition-all cursor-pointer shadow-sm ${isSelected
+                    ? 'bg-blue-50 border-[#023093] text-slate-900 shadow-md scale-105'
+                    : 'bg-white border-slate-200 hover:border-blue-300 text-slate-800'
+                  }`}
               >
                 <div className="flex items-center gap-1.5 mb-1">
                   <span className="text-xs">📍</span>

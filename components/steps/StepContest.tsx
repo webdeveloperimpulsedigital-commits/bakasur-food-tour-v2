@@ -36,7 +36,7 @@ export const StepContest: React.FC<StepContestProps> = ({
   // Handle WhatsApp Share / Native Share
   const handleSharePass = async () => {
     const shareText = `🍽️ I just contributed my food recommendation (${dish.name} at ${restaurant.name}, ${restaurant.city}) to Bakasur's Food Tour! Check out the Gastrium Food Tour Map: ${typeof window !== 'undefined' ? window.location.origin : ''}`;
-    
+
     // Trigger celebration confetti
     confetti({
       particleCount: 100,
@@ -126,7 +126,7 @@ export const StepContest: React.FC<StepContestProps> = ({
           <Check className="w-3.5 h-3.5 text-emerald-600" />
           <span>SUBMISSION CONFIRMED • CONTRIBUTION RECORDED</span>
         </div>
-        
+
         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 brand-font">
           Thank You! Bakasur Ka Food Tour Contribution Recorded!
         </h2>
@@ -135,7 +135,7 @@ export const StepContest: React.FC<StepContestProps> = ({
         </p>
       </div>
 
-      {/* Contribution Ticket Card */}
+      {/* Official Tour Pass Ticket Card */}
       <div className="rounded-2xl border-2 border-slate-200 bg-gradient-to-b from-blue-50/40 to-white p-4 sm:p-5 flex flex-col gap-3 shadow-md relative overflow-hidden">
         {/* Pass Header */}
         <div className="flex items-center justify-between border-b border-slate-200 pb-2.5">
@@ -171,7 +171,7 @@ export const StepContest: React.FC<StepContestProps> = ({
         </div>
 
         {/* Dish & Spice Info */}
-        <div className="rounded-xl bg-white border border-slate-200/80 p-3 flex flex-col gap-1 text-xs">
+        <div className="rounded-xl bg-slate-50 border border-slate-200/80 p-3 flex flex-col gap-1 text-xs">
           <div className="font-bold text-slate-900 flex items-center gap-1">
             <span>🍽 Recommended Dish:</span>
             <span className="text-[#023093] font-extrabold">{dish.name}</span>

@@ -16,11 +16,11 @@
 }
 
 body {
-  background-color: #05091e;
+  background-color: #f8fafc;
   background-image: 
-    radial-gradient(circle at 15% 15%, rgba(2, 48, 147, 0.35) 0%, transparent 45%),
-    radial-gradient(circle at 85% 85%, rgba(0, 172, 193, 0.2) 0%, transparent 45%),
-    radial-gradient(circle at 50% 50%, rgba(6, 11, 36, 0.95) 0%, #030614 100%);
+    radial-gradient(circle at 10% 20%, rgba(2, 48, 147, 0.04) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(249, 115, 22, 0.04) 0%, transparent 40%),
+    linear-gradient(to bottom, #ffffff 0%, #f8fafc 100%);
   color: #0f172a;
   min-height: 100vh;
   font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
@@ -32,24 +32,26 @@ h1, h2, h3, h4, .brand-font {
   letter-spacing: -0.02em;
 }
 
-/* Custom Pulsing & Glow Keyframes */
+/* Sweet & Gentle Button Animations */
 @keyframes aurKhiloPulse {
   0%, 100% {
     transform: scale(1);
-    box-shadow: 0 0 20px rgba(2, 48, 147, 0.5), 0 0 40px rgba(0, 172, 193, 0.3);
+    box-shadow: 0 4px 14px 0 rgba(234, 88, 12, 0.35);
   }
   50% {
-    transform: scale(1.03);
-    box-shadow: 0 0 35px rgba(3, 59, 184, 0.8), 0 0 55px rgba(0, 172, 193, 0.6);
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px 0 rgba(234, 88, 12, 0.5);
   }
 }
 
 @keyframes gastriumGlow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(0, 200, 83, 0.4);
+    transform: scale(1);
+    box-shadow: 0 4px 14px 0 rgba(16, 185, 129, 0.35);
   }
   50% {
-    box-shadow: 0 0 35px rgba(0, 200, 83, 0.8);
+    transform: scale(1.02);
+    box-shadow: 0 6px 20px 0 rgba(16, 185, 129, 0.55);
   }
 }
 
@@ -58,7 +60,7 @@ h1, h2, h3, h4, .brand-font {
     transform: translateY(0px);
   }
   50% {
-    transform: translateY(-5px);
+    transform: translateY(-4px);
   }
 }
 
@@ -72,7 +74,7 @@ h1, h2, h3, h4, .brand-font {
 }
 
 .aur-khilo-btn {
-  animation: aurKhiloPulse 1.8s infinite ease-in-out;
+  animation: aurKhiloPulse 2s infinite ease-in-out;
 }
 
 .gastrium-pulse {
@@ -87,11 +89,11 @@ h1, h2, h3, h4, .brand-font {
   animation: spinSlow 12s linear infinite;
 }
 
-/* White Card Container Styles */
+/* Clean White Card Styles */
 .step-card {
   background: #ffffff;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 20px 45px -10px rgba(0, 0, 0, 0.25), 0 0 20px rgba(2, 48, 147, 0.08);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.06), 0 4px 6px -2px rgba(0, 0, 0, 0.03);
 }
 
 /* Custom Scrollbar */
@@ -115,15 +117,15 @@ h1, h2, h3, h4, .brand-font {
   width: 100%;
   height: 100%;
   border-radius: 1.25rem;
-  background: #0b0f2a !important;
+  background: #f8fafc !important;
 }
 
 .leaflet-popup-content-wrapper {
   background: #ffffff !important;
   color: #0f172a !important;
-  border: 1px solid #cbd5e1 !important;
+  border: 1px solid #e2e8f0 !important;
   border-radius: 12px !important;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.2) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1) !important;
 }
 
 .leaflet-popup-tip {

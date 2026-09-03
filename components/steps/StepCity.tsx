@@ -188,28 +188,28 @@ export const StepCity: React.FC<StepCityProps> = ({
   }, [availableAreas, areaSearchQuery]);
 
   return (
-    <div className="w-full rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-2xl border border-slate-100 flex flex-col gap-4 text-slate-900 relative">
+    <div className="w-full flex flex-col gap-4 text-white">
       {/* Top Section Header */}
       <div className="text-left">
         <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block">
+          <span className="text-[11px] font-black text-yellow-300 uppercase tracking-wider block">
             STEP 1 OF 4 • GPS LOCATION &amp; HOTELS
           </span>
           <button
             onClick={detectUserLocation}
             disabled={isDetectingLocation}
             type="button"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-blue-50 hover:bg-blue-100 text-[#023093] text-[11px] font-extrabold border border-blue-200 transition-all cursor-pointer"
+            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-extrabold border border-white/20 transition-all cursor-pointer"
           >
-            <RotateCw className={`w-3 h-3 ${isDetectingLocation ? 'animate-spin text-blue-600' : ''}`} />
+            <RotateCw className={`w-3 h-3 ${isDetectingLocation ? 'animate-spin text-yellow-300' : ''}`} />
             <span>Re-detect GPS</span>
           </button>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 brand-font">
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white brand-font">
           Kahan Khilaoge Bakasur Ko?
         </h2>
-        <p className="text-xs sm:text-sm text-slate-500 mt-0.5">
+        <p className="text-xs sm:text-sm text-blue-100 mt-0.5">
           Live GPS auto-detected iconic food joints in your locality:
         </p>
       </div>
@@ -217,40 +217,40 @@ export const StepCity: React.FC<StepCityProps> = ({
       {/* Zomato-Style Location Bar */}
       <div
         onClick={() => setShowLocationPickerModal(true)}
-        className="flex items-center justify-between p-3 px-3.5 rounded-2xl bg-gradient-to-r from-blue-50/90 via-slate-50 to-blue-50/90 border-2 border-blue-200/90 hover:border-[#023093] transition-all cursor-pointer shadow-sm group"
+        className="flex items-center justify-between p-3 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 hover:border-yellow-400/60 transition-all cursor-pointer shadow-sm group relative z-10"
       >
         <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-[#023093] text-white flex items-center justify-center shrink-0 shadow-sm shadow-blue-900/30">
-            <MapPin className="w-4 h-4 text-cyan-300 animate-bounce" />
+          <div className="w-8 h-8 rounded-xl bg-yellow-400 text-slate-950 flex items-center justify-center shrink-0 shadow-md">
+            <MapPin className="w-4 h-4 text-slate-950 animate-bounce" />
           </div>
           <div className="min-w-0">
             <div className="flex items-center gap-1.5">
-              <span className="font-black text-xs sm:text-sm text-slate-900 truncate brand-font group-hover:text-[#023093] transition-colors">
+              <span className="font-black text-xs sm:text-sm text-white truncate brand-font group-hover:text-yellow-300 transition-colors">
                 {detectedLocalityLabel}
               </span>
-              <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#023093] shrink-0 transition-transform group-hover:translate-y-0.5" />
+              <ChevronDown className="w-3.5 h-3.5 text-blue-200 group-hover:text-yellow-300 shrink-0 transition-transform group-hover:translate-y-0.5" />
             </div>
-            <div className="flex items-center gap-1 text-[10px] text-slate-500 font-semibold truncate">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
+            <div className="flex items-center gap-1 text-[10px] text-blue-200 font-semibold truncate">
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
               <span className="truncate">{locationStatus}</span>
             </div>
           </div>
         </div>
 
-        <span className="text-[11px] font-extrabold text-[#023093] bg-white px-2.5 py-1 rounded-lg border border-blue-200 shadow-2xs shrink-0 whitespace-nowrap">
+        <span className="text-[11px] font-extrabold text-slate-950 bg-yellow-400 hover:bg-yellow-300 px-2.5 py-1 rounded-lg border border-yellow-300 shadow-sm shrink-0 whitespace-nowrap">
           Change Area ▾
         </span>
       </div>
 
       {/* Zomato-Style Area Quick Filter Chips */}
       {selectedCity.toLowerCase() === 'pune' && (
-        <div className="flex flex-col gap-1.5">
+        <div className="flex flex-col gap-1.5 relative z-10">
           <div className="flex items-center justify-between text-[11px]">
-            <span className="font-bold text-slate-500 uppercase tracking-wider flex items-center gap-1">
-              <Compass className="w-3.5 h-3.5 text-orange-500" />
+            <span className="font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-1">
+              <Compass className="w-3.5 h-3.5 text-yellow-400" />
               <span>Select Locality / Area in Pune:</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-mono">
+            <span className="text-[10px] text-blue-200 font-mono">
               {availableAreas.length} Localities
             </span>
           </div>
@@ -262,8 +262,8 @@ export const StepCity: React.FC<StepCityProps> = ({
               type="button"
               className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer border text-[11px] ${
                 currentArea === 'All Areas'
-                  ? 'bg-[#023093] text-white border-[#023093] shadow-md shadow-blue-900/20'
-                  : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
+                  ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-md shadow-yellow-500/20 font-black'
+                  : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
               }`}
             >
               ✨ All Pune
@@ -279,13 +279,13 @@ export const StepCity: React.FC<StepCityProps> = ({
                   type="button"
                   className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer border text-[11px] flex items-center gap-1 ${
                     isSelected
-                      ? 'bg-[#023093] text-white border-[#023093] shadow-md shadow-blue-900/20 scale-[1.02]'
-                      : 'bg-slate-50 text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-100'
+                      ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-md shadow-yellow-500/20 font-black scale-[1.02]'
+                      : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
                   }`}
                 >
                   <span>📍 {area.name}</span>
                   {area.distanceKm !== undefined && (
-                    <span className={`text-[9px] font-mono px-1 rounded ${isSelected ? 'bg-blue-800 text-cyan-200' : 'bg-slate-200 text-slate-600'}`}>
+                    <span className={`text-[9px] font-mono px-1 rounded ${isSelected ? 'bg-amber-600/30 text-slate-950 font-bold' : 'bg-white/20 text-blue-100'}`}>
                       {area.distanceKm}km
                     </span>
                   )}
@@ -297,14 +297,14 @@ export const StepCity: React.FC<StepCityProps> = ({
       )}
 
       {/* Unified Search Bar */}
-      <div className="relative">
+      <div className="relative z-10">
         <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
           placeholder={`🔍 Search restaurant, dish, or area (e.g. Vaishali, Misal, FC Road)...`}
-          className="w-full pl-10 pr-8 py-2.5 sm:py-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:border-[#023093] focus:bg-white transition-all shadow-inner"
+          className="w-full pl-10 pr-8 py-2.5 sm:py-3 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all shadow-md"
         />
         {searchQuery && (
           <button
@@ -317,33 +317,33 @@ export const StepCity: React.FC<StepCityProps> = ({
       </div>
 
       {/* Recommended Nearby Hotels / Food Joints List */}
-      <div className="flex flex-col gap-2">
+      <div className="flex flex-col gap-1.5 min-h-0 relative z-10">
         <div className="flex items-center justify-between text-xs">
-          <span className="font-extrabold text-slate-700 uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-amber-500" />
+          <span className="font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
+            <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
             <span>
-              {currentArea !== 'All Areas' ? `${currentArea} Spots` : `Recommended Spots in ${selectedCity}`}
+              {currentArea !== 'All Areas' ? `${currentArea} Spots` : `Recommended in ${selectedCity}`}
             </span>
           </span>
-          <span className="text-[11px] text-slate-500 font-semibold font-mono">
+          <span className="text-[11px] text-yellow-300 font-semibold font-mono">
             {nearbyRestaurants.length} Joints
           </span>
         </div>
 
-        <div className="flex flex-col gap-2 max-h-[250px] overflow-y-auto pr-1">
+        <div className="flex flex-col gap-2 max-h-[140px] sm:max-h-[170px] md:max-h-[200px] overflow-y-auto pr-1">
           {isLoadingSpots && nearbyRestaurants.length === 0 ? (
             <div className="flex flex-col gap-2">
               {[1, 2, 3].map(i => (
-                <div key={i} className="h-16 rounded-2xl bg-slate-100 animate-pulse" />
+                <div key={i} className="h-14 rounded-2xl bg-white/10 animate-pulse" />
               ))}
             </div>
           ) : nearbyRestaurants.length === 0 ? (
-            <div className="p-6 text-center rounded-2xl bg-slate-50 border border-slate-200 flex flex-col items-center gap-2">
+            <div className="p-6 text-center rounded-2xl bg-white/10 border border-white/15 flex flex-col items-center gap-2">
               <span className="text-2xl">🍽️</span>
-              <p className="text-xs font-bold text-slate-600">No restaurants found in &quot;{currentArea}&quot;.</p>
+              <p className="text-xs font-bold text-blue-100">No restaurants found in &quot;{currentArea}&quot;.</p>
               <button
                 onClick={() => handleAreaSelect('All Areas')}
-                className="text-xs font-bold text-[#023093] hover:underline"
+                className="text-xs font-bold text-yellow-300 hover:underline"
               >
                 View all restaurants in {selectedCity} →
               </button>
@@ -355,10 +355,10 @@ export const StepCity: React.FC<StepCityProps> = ({
                 <div
                   key={rest.id}
                   onClick={() => onSelectRestaurant(rest)}
-                  className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                  className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 text-slate-900 ${
                     isSelected
-                      ? 'border-2 border-[#023093] bg-blue-50/80 shadow-md scale-[1.01]'
-                      : 'border-slate-200 hover:border-blue-300 hover:bg-slate-50 bg-white'
+                      ? 'border-2 border-yellow-400 bg-yellow-50/95 shadow-lg scale-[1.01]'
+                      : 'border-white/20 hover:border-yellow-400/50 hover:bg-slate-50 bg-white shadow-md'
                   }`}
                 >
                   {/* Left Thumbnail & Details */}
@@ -413,11 +413,11 @@ export const StepCity: React.FC<StepCityProps> = ({
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex items-center gap-3 pt-1">
+      <div className="flex items-center gap-3 pt-1 relative z-10">
         <button
           onClick={onBack}
           type="button"
-          className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer"
+          className="px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer"
         >
           Back
         </button>
@@ -426,7 +426,7 @@ export const StepCity: React.FC<StepCityProps> = ({
           onClick={onNext}
           disabled={!selectedRestaurant}
           type="button"
-          className="flex-1 py-3 px-5 rounded-xl bg-[#023093] hover:bg-[#033bb8] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-900/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50"
+          className="flex-1 py-3.5 px-5 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide"
         >
           <span>Next: Pick Food to Feed</span>
           <ArrowRight className="w-4 h-4" />
