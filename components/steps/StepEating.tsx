@@ -57,43 +57,43 @@ export const StepEating: React.FC<StepEatingProps> = ({
   // Stage Dialogues & Visual Metadata (3-Tap Feeding Loop & Acidity from Indulgence)
   const STAGE_CONFIG = {
     1: {
-      title: 'Pehli Helping (Appetite Started)',
-      dialogue: '😋 Mmm, delicious! But my stomach isn\'t full yet... Mujhe aur khilao! 🤤',
-      subtitle: 'Bakasur devoured the 1st plate of ' + dish.name + '! He is waiting for more food.',
+      title: 'Pehli Helping',
+      dialogue: 'Mmm delicious! Par pet nahi bhara, mujhe aur khilao! 🤤',
+      subtitle: 'Bakasur devoured 1st plate! He wants more.',
       statusColor: 'text-amber-500',
       badgeBg: 'bg-amber-100 text-amber-800 border-amber-300',
       progressBg: 'from-amber-500 via-orange-400 to-yellow-300',
-      plates: '🍽️ 1st Plate Consumed',
-      ctaText: '🍽️ AUR KHILAO (FEED 2ND HELPING)',
-      ctaSubtext: '👆 20% capacity reached! Click "AUR KHILAO" to feed Bakasur the 2nd helping (45%)!',
+      plates: '🍽️ 1 Plate',
+      ctaText: '🍽️ AUR KHILAO (2ND HELPING)',
+      ctaSubtext: '👆 Feed Bakasur the 2nd plate!',
       mascotEmoji: '😋',
-      mascotMood: 'Waiting for More Food'
+      mascotMood: 'Wanting More Food'
     },
     2: {
-      title: 'Doosri Helping (Going Strong)',
-      dialogue: '🍗 Mazedaar! Par Bakasur ke monster pet ke liye yeh kaafi nahi hai... Aur lao, aur khilao!',
-      subtitle: 'Bakasur gobbled down 2 full plates! His massive appetite demands the 3rd final course.',
+      title: 'Doosri Helping',
+      dialogue: 'Mazedaar! Bakasur ke monster pet ke liye yeh kaafi nahi... Aur lao! 🍗',
+      subtitle: 'Bakasur devoured 2 plates! Demands 3rd course.',
       statusColor: 'text-orange-500',
       badgeBg: 'bg-orange-100 text-orange-800 border-orange-300',
       progressBg: 'from-orange-500 via-amber-400 to-yellow-400',
-      plates: '🍽️🍽️ 2 Plates Consumed',
-      ctaText: '🍽️ AUR KHILAO (FEED 3RD HELPING)',
-      ctaSubtext: '👆 45% devoured! Click "AUR KHILAO" to feed him to maximum capacity (100%)!',
+      plates: '🍽️🍽️ 2 Plates',
+      ctaText: '🍽️ AUR KHILAO (3RD HELPING)',
+      ctaSubtext: '👆 Feed Bakasur to full capacity!',
       mascotEmoji: '🤤',
-      mascotMood: 'Waiting for More Food'
+      mascotMood: 'Still Hungry'
     },
     3: {
-      title: 'Indulgence Overload (Acidity Discomfort 🔥)',
-      dialogue: '🔥🔥 ARRE BAAP RE! Teen-teen heavy helpings aur itna zyada indulgence! Khana toh zabardast tha par overeating se pet mein aag lag gayi... Bachao! Help karo!',
-      subtitle: 'Bakasur enjoyed 3 extra helpings of delicious food! Heavy indulgence and extra helpings have caused acidity discomfort. Can you help put out the fire?',
+      title: 'Acidity Overload 🔥',
+      dialogue: '🔥🔥 ARRE BAAP RE! Overeating se pet mein aag lag gayi... Bachao!',
+      subtitle: 'Heavy indulgence caused severe acidity discomfort!',
       statusColor: 'text-red-500',
       badgeBg: 'bg-red-100 text-red-800 border-red-300 animate-pulse',
       progressBg: 'from-red-600 via-rose-500 to-orange-500',
       plates: '🍽️🍽️🍽️ 3 Plates (Overload!)',
       ctaText: '⚡ HELP BAKASUR NOW! 🔥',
-      ctaSubtext: '🚨 Bakasur is in distress from overeating! Click to help him neutralize the burning discomfort!',
+      ctaSubtext: '🚨 Give Gastrium to cool down the burning acid in 6s!',
       mascotEmoji: '🔥',
-      mascotMood: 'Discomfort from Indulgence'
+      mascotMood: 'Acid Discomfort'
     }
   };
 
@@ -135,189 +135,111 @@ export const StepEating: React.FC<StepEatingProps> = ({
   };
 
   return (
-    <div className="w-full flex flex-col gap-4 sm:gap-5 text-white animate-in fade-in duration-300">
+    <div className="w-full flex flex-col gap-2 sm:gap-2.5 text-white animate-in fade-in duration-300">
       {/* Top Header Label */}
-      <div className="text-left">
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-[11px] font-black text-yellow-300 uppercase tracking-wider block">
-            STEP 4 • BAKASUR FEASTING 🍲
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0">
+          <span className="text-[10px] font-black text-yellow-300 uppercase tracking-wider block">
+            STEP 3 • BAKASUR FEASTING
           </span>
-          <span className="text-[11px] font-mono font-bold text-yellow-300 bg-yellow-400/20 px-2.5 py-0.5 rounded-md border border-yellow-400/40">
-            Stage {currentStage} of 3
-          </span>
+          <h2 className="text-base sm:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
+            {currentStage === 3 ? 'Arre Re! Masala Overload!' : `Feeding ${dish.name}!`}
+          </h2>
         </div>
-
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-red-500/20 text-red-200 border border-red-500/40 text-[10px] font-extrabold uppercase tracking-wider mb-2">
-          <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-ping" />
-          <span>LIVE FEASTING • {restaurant.name.toUpperCase()}, {restaurant.city.toUpperCase()}</span>
-        </div>
-
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white brand-font flex items-center gap-2">
-          <span>{currentStage === 3 ? 'Arre Re! Masala Overload!' : `Bakasur is Eating ${dish.name}!`}</span>
-        </h2>
+        <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border shrink-0 ${currentConfig.badgeBg}`}>
+          {meterPercent}% FULL
+        </span>
       </div>
 
       {/* Bakasur Dynamic Comic Speech Bubble Box */}
-      <div className={`relative rounded-2xl p-4 sm:p-5 border-2 shadow-sm transition-all duration-300 z-10 ${
+      <div className={`relative rounded-xl p-2.5 sm:p-3 border-2 shadow-sm transition-all duration-300 z-10 ${
         currentStage === 3
-          ? 'bg-red-950/80 border-red-400 text-white shadow-red-950/50'
+          ? 'bg-red-950/85 border-red-400 text-white shadow-red-950/50'
           : currentStage === 2
-          ? 'bg-amber-950/80 border-amber-400 text-white shadow-amber-950/50'
-          : 'bg-blue-950/80 border-blue-300 text-white shadow-blue-950/50'
+          ? 'bg-amber-950/85 border-amber-400 text-white shadow-amber-950/50'
+          : 'bg-blue-950/85 border-blue-300 text-white shadow-blue-950/50'
       }`}>
-        {/* Speech Bubble Pointer */}
-        <div className={`absolute -top-2.5 left-8 w-5 h-5 rotate-45 border-t-2 border-l-2 bg-inherit ${
-          currentStage === 3
-            ? 'border-red-400'
-            : currentStage === 2
-            ? 'border-amber-400'
-            : 'border-blue-300'
-        }`} />
-
-        <div className="flex items-start gap-3 relative z-10">
-          <div className="text-3xl sm:text-4xl shrink-0 p-1 select-none animate-bounce">
+        <div className="flex items-center gap-2.5 relative z-10">
+          <div className="text-2xl shrink-0 p-0.5 select-none animate-bounce">
             {currentConfig.mascotEmoji}
           </div>
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center justify-between gap-1 mb-1">
-              <span className="text-[10px] font-extrabold uppercase tracking-wider text-yellow-300 flex items-center gap-1">
-                <span>BAKASUR SAYS:</span>
-                <span className="font-mono text-blue-200">({currentConfig.mascotMood})</span>
-              </span>
-              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border ${currentConfig.badgeBg}`}>
-                {meterPercent}% CAPACITY
-              </span>
-            </div>
-
-            <p className="font-extrabold text-sm sm:text-base leading-snug tracking-tight text-white">
-              &ldquo;{currentConfig.dialogue}&rdquo;
-            </p>
-          </div>
+          <p className="font-extrabold text-xs sm:text-sm leading-snug tracking-tight text-white flex-1">
+            &ldquo;{currentConfig.dialogue}&rdquo;
+          </p>
         </div>
       </div>
 
-      {/* Selected Food & Multi-Stage Food Meter HUD */}
-      <div className="rounded-2xl bg-white/10 text-white p-4 sm:p-5 flex flex-col gap-3.5 shadow-md border border-white/15 backdrop-blur-md relative z-10">
-        {/* Row 1: Food Info & Spice Level */}
-        <div className="flex items-center justify-between border-b border-white/15 pb-2.5">
-          <div className="min-w-0">
-            <span className="text-[10px] font-bold text-yellow-300 uppercase tracking-wider block">
-              🍽 SELECTED FOOD &amp; JOINT
+      {/* Selected Food & Food Meter Bar */}
+      <div className="rounded-xl bg-white/10 text-white p-2.5 sm:p-3 flex flex-col gap-1.5 shadow-md border border-white/15 backdrop-blur-md relative z-10">
+        <div className="flex items-center justify-between text-xs">
+          <div className="flex items-center gap-1.5 min-w-0">
+            <Flame className={`w-3.5 h-3.5 shrink-0 ${meterPercent >= 100 ? 'text-red-400 animate-ping' : 'text-yellow-400'}`} />
+            <span className="font-black text-white uppercase tracking-wide brand-font text-[11px] truncate">
+              {currentConfig.title}
             </span>
-            <h3 className="font-black text-base sm:text-lg text-white brand-font truncate">
-              {dish.name}
-            </h3>
-            <p className="text-xs text-blue-100 font-medium truncate">
-              📍 {restaurant.name} • {restaurant.city}
-            </p>
           </div>
-
-          <div className="shrink-0 text-right">
-            <span className="inline-flex items-center gap-1 text-xs font-black text-yellow-300 bg-yellow-400/20 px-2.5 py-1 rounded-full border border-yellow-400/40 shadow-sm">
-              <span>{spice.icon}</span>
-              <span>{spice.name}</span>
-            </span>
-            <p className="text-[10px] text-blue-200 mt-0.5 font-mono">Heat: {spice.level}</p>
-          </div>
+          <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/20 px-1.5 py-0.2 rounded shrink-0">
+            {spice.icon} {spice.name}
+          </span>
         </div>
 
-        {/* Row 2: Food Meter Capacity & Status */}
-        <div className="flex flex-col gap-2 pt-1">
-          <div className="flex items-center justify-between text-xs">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <Flame className={`w-4 h-4 ${meterPercent >= 100 ? 'text-red-400 animate-ping' : 'text-yellow-400'}`} />
-              <span className="font-black text-white uppercase tracking-wide brand-font">
-                FOOD METER: <span className="text-yellow-300">{currentConfig.title}</span>
-              </span>
-              <span className="text-[10px] font-extrabold px-2 py-0.5 rounded-md bg-white/10 text-cyan-300 border border-white/10">
-                {currentConfig.plates}
-              </span>
-            </div>
-            <span className={`font-black font-mono text-sm sm:text-base ${
-              meterPercent >= 100 ? 'text-red-400 animate-pulse' : 'text-yellow-300'
-            }`}>
+        {/* Meter Bar */}
+        <div className="relative w-full h-4 sm:h-5 rounded-lg bg-slate-900/60 p-0.5 border border-white/20 overflow-hidden shadow-inner">
+          <div
+            className={`h-full rounded-md bg-gradient-to-r ${currentConfig.progressBg} transition-all duration-700 ease-out flex items-center justify-end pr-1.5 shadow-sm`}
+            style={{ width: `${Math.max(meterPercent, 10)}%` }}
+          >
+            <span className="text-[9px] font-black text-slate-950 font-mono">
               {meterPercent}%
             </span>
           </div>
+        </div>
 
-          {/* Meter Bar */}
-          <div className="relative w-full h-6 sm:h-7 rounded-xl bg-slate-900/60 p-1 border border-white/20 overflow-hidden shadow-inner">
-            <div
-              className={`h-full rounded-lg bg-gradient-to-r ${currentConfig.progressBg} transition-all duration-700 ease-out flex items-center justify-end pr-2 shadow-sm`}
-              style={{ width: `${Math.max(meterPercent, 10)}%` }}
-            >
-              <span className="text-[10px] sm:text-[11px] font-black text-slate-950 font-mono tracking-tight">
-                {meterPercent}%
-              </span>
-            </div>
-
-            {/* Checkpoint Milestones (20%, 45%, 100%) */}
-            <div className="absolute inset-0 flex justify-between items-center px-4 pointer-events-none opacity-40">
-              <div className="h-3 w-0.5 bg-white" title="Stage 1 (20%)" />
-              <div className="h-3 w-0.5 bg-white" title="Stage 2 (45%)" />
-              <div className="h-3 w-0.5 bg-white" title="Stage 3 (100%)" />
-            </div>
-          </div>
-
-          {/* Stage Checkpoints */}
-          <div className="flex items-center justify-between text-[11px] text-blue-200 pt-1 font-medium">
-            <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${meterPercent >= 20 ? 'bg-yellow-400' : 'bg-white/30'}`} />
-              <span className={meterPercent >= 20 ? 'text-yellow-300 font-bold' : ''}>20% Eaten</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${meterPercent >= 45 ? 'bg-orange-400' : 'bg-white/30'}`} />
-              <span className={meterPercent >= 45 ? 'text-orange-300 font-bold' : ''}>45% Gobbled</span>
-            </div>
-
-            <div className="flex items-center gap-1">
-              <span className={`w-2 h-2 rounded-full ${meterPercent >= 100 ? 'bg-red-400 animate-ping' : 'bg-white/30'}`} />
-              <span className={meterPercent >= 100 ? 'text-red-300 font-extrabold' : ''}>100% Critical 🔥</span>
-            </div>
-          </div>
+        {/* Stage Milestones */}
+        <div className="flex items-center justify-between text-[10px] text-blue-200 font-medium">
+          <span className={meterPercent >= 20 ? 'text-yellow-300 font-bold' : ''}>🍽️ 1st Plate</span>
+          <span className={meterPercent >= 45 ? 'text-orange-300 font-bold' : ''}>🍽️ 2nd Plate</span>
+          <span className={meterPercent >= 100 ? 'text-red-300 font-extrabold' : ''}>🔥 Overload</span>
         </div>
       </div>
 
       {/* Main Interactive CTA Button */}
-      <div className="flex flex-col gap-2 pt-1 relative z-10">
-        <div className="flex items-center gap-3">
-          {/* Back Button (always available to pick food again) */}
+      <div className="flex flex-col gap-1 pt-0.5 relative z-10">
+        <div className="flex items-center gap-2">
           <button
             onClick={onBackToDish}
             type="button"
-            className="px-4 sm:px-5 py-3.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5"
+            className="px-3.5 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 transition-all cursor-pointer whitespace-nowrap flex items-center gap-1 shrink-0"
           >
-            <ArrowLeft className="w-4 h-4" />
-            <span>Change Food</span>
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>Change</span>
           </button>
 
-          {/* Dynamic Stage Progression CTA Button */}
           <button
             onClick={handleMainAction}
             type="button"
-            className={`flex-1 py-3.5 sm:py-4 px-4 sm:px-6 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-2 transition-all cursor-pointer brand-font ${
+            className={`flex-1 py-3 px-4 rounded-xl font-black text-xs sm:text-sm uppercase tracking-wider flex items-center justify-center gap-1.5 transition-all cursor-pointer brand-font ${
               currentStage === 3
                 ? 'gastrium-pulse bg-gradient-to-r from-emerald-400 via-teal-300 to-cyan-400 text-slate-950 hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-emerald-500/30 border border-emerald-300'
-                : 'aur-khilo-btn bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-yellow-500/25 border border-yellow-300'
+                : 'aur-khilo-btn bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 text-slate-950 hover:scale-[1.01] active:scale-[0.99] shadow-xl shadow-yellow-500/25 border border-yellow-300'
             }`}
           >
             {currentStage === 3 ? (
               <>
-                <ShieldAlert className="w-5 h-5 text-slate-950 animate-bounce shrink-0" />
+                <ShieldAlert className="w-4 h-4 text-slate-950 animate-bounce shrink-0" />
                 <span>{currentConfig.ctaText}</span>
               </>
             ) : (
               <>
-                <Utensils className="w-4 h-4 fill-current text-slate-950 shrink-0" />
+                <Utensils className="w-3.5 h-3.5 fill-current text-slate-950 shrink-0" />
                 <span>{currentConfig.ctaText}</span>
-                <Zap className="w-4 h-4 fill-current animate-bounce text-slate-950 shrink-0" />
+                <Zap className="w-3.5 h-3.5 fill-current animate-bounce text-slate-950 shrink-0" />
               </>
             )}
           </button>
         </div>
 
-        <p className={`text-center text-[11px] font-bold ${
+        <p className={`text-center text-[10px] font-bold ${
           currentStage === 3 ? 'text-red-300 animate-pulse' : 'text-blue-200'
         }`}>
           {currentConfig.ctaSubtext}

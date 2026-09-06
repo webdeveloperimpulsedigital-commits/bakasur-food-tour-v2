@@ -109,7 +109,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
         loop
         muted={isMuted}
         onEnded={onVideoEnded}
-        className="w-full h-full object-cover object-top"
+        className="w-full h-full object-cover object-[center_40%] sm:object-center"
       />
     </div>
   );
