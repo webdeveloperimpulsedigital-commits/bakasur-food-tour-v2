@@ -38,7 +38,7 @@ export default function CampaignPage() {
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | { name: string; id?: number; price?: number } | null>(null);
   const [selectedSpice, setSelectedSpice] = useState<SpiceOption>(SPICE_LEVELS[1]); // Default Masaledaar (3/5)
-  const [soundEnabled, setSoundEnabled] = useState<boolean>(true);
+  const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
   const [feastingStage, setFeastingStage] = useState<1 | 2 | 3>(1);
 
   // Video State

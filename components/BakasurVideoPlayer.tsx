@@ -22,7 +22,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
   feastingStage = 1,
   dishName,
   spice,
-  soundEnabled = true,
+  soundEnabled = false,
   onToggleSound,
   onVideoEnded,
   posterImage = "/images/bakasur_pass.jpg"
