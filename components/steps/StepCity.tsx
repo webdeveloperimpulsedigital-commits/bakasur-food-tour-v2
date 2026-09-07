@@ -175,6 +175,28 @@ export const StepCity: React.FC<StepCityProps> = ({
     setShowLocationPickerModal(false);
   };
 
+  // Handle Add Custom Restaurant
+  const handleAddCustomRestaurant = () => {
+    if (!searchQuery.trim()) return;
+    const customSpot: Restaurant = {
+      id: 999000 + Math.floor(Math.random() * 1000),
+      name: searchQuery.trim(),
+      description: `Custom selected food spot in ${selectedCity}`,
+      address: `${currentArea !== 'All Areas' ? currentArea + ', ' : ''}${selectedCity}`,
+      area: currentArea !== 'All Areas' ? currentArea : 'Central',
+      city: selectedCity,
+      latitude: coords.lat,
+      longitude: coords.lng,
+      rating: 5.0,
+      image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80",
+      is_campaign_active: 1,
+      total_visits: 1,
+      status: 'active'
+    };
+    setNearbyRestaurants([customSpot, ...nearbyRestaurants]);
+    onSelectRestaurant(customSpot);
+  };
+
   // Filtered Localities in Modal
   const filteredLocalities = useMemo(() => {
     if (!areaSearchQuery.trim()) return availableAreas;
@@ -221,7 +243,7 @@ export const StepCity: React.FC<StepCityProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`🔍 Sheher ka sabse famous adda dhoondo (e.g. Vaishali, Katakirr, Irani Cafe)...`}
+          placeholder={`🔍 Search ANY spot in ${selectedCity} (e.g. Roopali, Vaishali, Katakirr, Goodluck)...`}
           className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
         />
         {searchQuery && (
@@ -245,13 +267,33 @@ export const StepCity: React.FC<StepCityProps> = ({
             </div>
           ) : nearbyRestaurants.length === 0 ? (
             <div className="p-3 text-center rounded-xl bg-white/10 border border-white/15">
-              <p className="text-xs font-bold text-blue-100">No spots found in &quot;{currentArea}&quot;.</p>
-              <button
-                onClick={() => handleAreaSelect('All Areas')}
-                className="text-xs font-bold text-[#ff6b4a] hover:underline mt-1 block mx-auto"
-              >
-                View all in {selectedCity} →
-              </button>
+              {searchQuery.trim() ? (
+                <div className="flex flex-col items-center gap-1.5">
+                  <p className="text-xs font-bold text-blue-100">
+                    No pre-listed spot found for &quot;{searchQuery}&quot;
+                  </p>
+                  <p className="text-[10px] text-blue-200">
+                    Bakasur can eat anywhere! Add this spot directly:
+                  </p>
+                  <button
+                    onClick={handleAddCustomRestaurant}
+                    type="button"
+                    className="py-1.5 px-3 rounded-lg bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1 cursor-pointer"
+                  >
+                    <span>➕ Feed Bakasur at &quot;{searchQuery}&quot;</span>
+                  </button>
+                </div>
+              ) : (
+                <>
+                  <p className="text-xs font-bold text-blue-100">No spots found in &quot;{currentArea}&quot;.</p>
+                  <button
+                    onClick={() => handleAreaSelect('All Areas')}
+                    className="text-xs font-bold text-[#ff6b4a] hover:underline mt-1 block mx-auto"
+                  >
+                    View all in {selectedCity} →
+                  </button>
+                </>
+              )}
             </div>
           ) : (
             nearbyRestaurants.map((rest) => {

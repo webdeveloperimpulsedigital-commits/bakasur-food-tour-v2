@@ -115,6 +115,8 @@ export const INITIAL_RESTAURANTS: Omit<Restaurant, 'id'>[] = [
   { name: "Irani Cafe", description: "Viman Nagar's bustling youth cafe famous for Bun Maska, Keema Ghotala, and authentic Irani Chai.", address: "Datta Mandir Chowk, Viman Nagar", area: "Viman Nagar", city: "Pune", latitude: 18.5679, longitude: 73.9143, rating: 4.7, image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1590, status: 'active' },
   { name: "The Urban Foundry", description: "Balewadi High Street favorite combining industrial chic ambiance with creative Indian fusion bar bites & tandoor.", address: "Balewadi High Street, Baner", area: "Baner", city: "Pune", latitude: 18.5590, longitude: 73.7868, rating: 4.8, image: "https://images.unsplash.com/photo-1544025162-d76694265947?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1720, status: 'active' },
   { name: "Shivraj Hotel", description: "Warje & Karve Nagar hotspot world-famous for massive Raavan Thali, Bullet Thali, and spicy Kolhapuri mutton.", address: "Warje Flyover, Sinhagad Road Extension", area: "Warje & Karve Nagar", city: "Pune", latitude: 18.4830, longitude: 73.8030, rating: 4.8, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1830, status: 'active' },
+  { name: "Cafe Roopali", description: "Iconic open-air garden cafe on FC Road, famous for crispy Mysore Masala Dosa, vegetable cutlet, and piping hot filter coffee since 1953.", address: "FC Road, Shivajinagar", area: "FC Road", city: "Pune", latitude: 18.5215, longitude: 73.8402, rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1980, status: 'active' },
+  { name: "Katakirr Misal", description: "World-famous spicy Kolhapuri misal sensation known for blazing red rassa, crunchy farsan, and thick curd bowl.", address: "Karve Road & Deccan Corner", area: "Deccan", city: "Pune", latitude: 18.5080, longitude: 73.8340, rating: 4.9, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2150, status: 'active' },
   { name: "Sarasbaug Chaupati Bhel", description: "Iconic chaupati stall opposite Sarasbaug famous for authentic SPDP, Bhelpuri, Ragda Patties, and butter Pav Bhaji.", address: "Opposite Sarasbaug, Swargate", area: "Swargate", city: "Pune", latitude: 18.5018, longitude: 73.8586, rating: 4.7, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1470, status: 'active' },
 
   // Mumbai (19-23)
@@ -675,7 +677,36 @@ export const db = {
       list = list.filter(r => r.city.toLowerCase() === options.city?.toLowerCase());
     }
 
-    if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
+    // If searching, ignore area constraint to allow finding spots anywhere in the city
+    if (options?.search && options.search.trim()) {
+      const q = options.search.toLowerCase().trim();
+      
+      const normalize = (str: string) => {
+        return str.toLowerCase()
+          .replace(/ruplai|rupali|roopali/g, 'roopali')
+          .replace(/jagdamb|jagadamb|jagadamba/g, 'jagdamb')
+          .replace(/vaishali|vishali/g, 'vaishali')
+          .replace(/bedekar|bedkar/g, 'bedekar')
+          .replace(/katakirr|katakir/g, 'katakirr')
+          .replace(/goodluck|good\s*luck/g, 'goodluck')
+          .replace(/sujata|sujatha/g, 'sujata');
+      };
+
+      const normalizedQuery = normalize(q);
+      const rawWords = q.split(/\s+/).filter(w => w.length > 0);
+      const noiseWords = new Set(['hotel', 'restaurant', 'cafe', 'dhaba', 'house', 'bar', 'spot', 'corner', 'center']);
+      const significantWords = rawWords.filter(w => !noiseWords.has(w));
+      const searchTokens = (significantWords.length > 0 ? significantWords : rawWords).map(w => normalize(w));
+
+      list = list.filter(r => {
+        const fullText = normalize(`${r.name} ${r.area} ${r.city} ${r.address} ${r.description}`);
+        if (fullText.includes(normalizedQuery)) return true;
+        
+        return searchTokens.some(token => {
+          return fullText.includes(token) || token.includes(normalize(r.name));
+        });
+      });
+    } else if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
       const a = options.area.toLowerCase().trim();
       const filtered = list.filter(r => 
         r.area.toLowerCase().includes(a) || 
@@ -683,20 +714,10 @@ export const db = {
         r.address.toLowerCase().includes(a) ||
         r.name.toLowerCase().includes(a)
       );
-      // If direct area match found, use it; otherwise fallback to city list so results are never broken
+      // If direct area match found, use it; otherwise fallback to city list
       if (filtered.length > 0) {
         list = filtered;
       }
-    }
-
-    if (options?.search) {
-      const q = options.search.toLowerCase();
-      list = list.filter(r => 
-        r.name.toLowerCase().includes(q) ||
-        r.area.toLowerCase().includes(q) ||
-        r.city.toLowerCase().includes(q) ||
-        r.address.toLowerCase().includes(q)
-      );
     }
 
     if (options?.limit) {
@@ -757,6 +778,16 @@ export const db = {
     if (options?.search) {
       const q = options.search.toLowerCase();
       list = list.filter(d => d.name.toLowerCase().includes(q) || d.description.toLowerCase().includes(q));
+    }
+    if (list.length === 0) {
+      const rest = await this.getRestaurantById(restaurantId);
+      const name = rest ? rest.name : 'Special';
+      return [
+        { id: restaurantId * 100 + 1, restaurant_id: restaurantId, name: `${name} Special Masaledaar Thali`, description: `Special signature feast from ${name}`, price: 280, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 99, is_recommended: 1, status: 'active' },
+        { id: restaurantId * 100 + 2, restaurant_id: restaurantId, name: `${name} Famous Crispy Dosa / Feast`, description: `Crispy golden street specialty with spicy masala`, price: 160, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80", rating: 4.8, popularity: 95, is_recommended: 1, status: 'active' },
+        { id: restaurantId * 100 + 3, restaurant_id: restaurantId, name: "Spicy Schezwan / Tarri Special", description: "Hot fiery red spice specialty to challenge Bakasur", price: 180, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 97, is_recommended: 1, status: 'active' },
+        { id: restaurantId * 100 + 4, restaurant_id: restaurantId, name: "Signature Chai / Thick Shake", description: "Rich comforting beverage to complement the feast", price: 60, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80", rating: 4.7, popularity: 92, is_recommended: 1, status: 'active' }
+      ];
     }
     return list.sort((a, b) => b.popularity - a.popularity);
   },
