@@ -4,6 +4,20 @@ import { searchLivePlaces } from '@/lib/livePlaces';
 
 export const dynamic = 'force-dynamic';
 
+function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
+  const R = 6371; // km
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) *
+      Math.cos((lat2 * Math.PI) / 180) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+  return R * c;
+}
+
 function extractLocationFromQuery(query: string, fallbackCity: string): { area: string; city: string } {
   const q = query.toLowerCase();
 
@@ -152,14 +166,14 @@ export async function GET(request: Request) {
     const lng = parseFloat(searchParams.get('lng') || searchParams.get('longitude') || '');
 
     if (!query.trim()) {
-      const topDefaults = await db.getRestaurants({ city: city || 'Pune', limit: 50 });
+      const topDefaults = await db.getRestaurants({ city: city || undefined, limit: 60 });
       return NextResponse.json({ success: true, count: topDefaults.length, data: topDefaults });
     }
 
     // 1. Search Curated DB Spots across all cities
-    const dbMatched = await db.getRestaurants({ search: query, limit: 50 });
+    const dbMatched = await db.getRestaurants({ search: query, limit: 60 });
 
-    // 2. Fetch Live Real Places from OpenStreetMap Live API
+    // 2. Fetch Live Real Places from OpenStreetMap Live API (searches nationwide)
     let liveSpots: Restaurant[] = [];
     try {
       liveSpots = await searchLivePlaces({
@@ -172,7 +186,7 @@ export async function GET(request: Request) {
       liveSpots = [];
     }
 
-    // 3. Deduplicate and merge (prioritizing DB curated spots)
+    // 3. Deduplicate and merge
     const existingNames = new Set(dbMatched.map(r => r.name.toLowerCase().trim()));
     const uniqueLiveSpots = liveSpots.filter(l => !existingNames.has(l.name.toLowerCase().trim()));
 
@@ -199,14 +213,25 @@ export async function GET(request: Request) {
       });
     }
 
+    // 5. Calculate real-world distance if user coords are present
+    const finalResults = combined.map(r => {
+      let distanceKm: number | null = null;
+      if (!isNaN(lat) && !isNaN(lng) && r.latitude && r.longitude) {
+        distanceKm = Math.round(calculateDistance(lat, lng, r.latitude, r.longitude) * 10) / 10;
+      }
+      return {
+        ...r,
+        distanceKm: distanceKm ?? 1.5
+      };
+    });
+
     return NextResponse.json({
       success: true,
-      count: combined.length,
-      data: combined
+      count: finalResults.length,
+      data: finalResults
     });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : 'Search failed';
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
-

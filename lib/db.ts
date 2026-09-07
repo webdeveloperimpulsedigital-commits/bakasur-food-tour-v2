@@ -603,7 +603,7 @@ class MemoryStore {
     this.restaurants = INITIAL_RESTAURANTS.map(r => ({ ...r, id: this.nextRestId++ }));
     this.dishes = INITIAL_DISHES.map(d => ({ ...d, id: this.nextDishId++ }));
     this.videos = INITIAL_VIDEOS.map(v => ({ ...v, id: this.nextVideoId++ }));
-    
+
     // Seed some initial visit spots across cities for map
     this.visits = [
       { id: this.nextVisitId++, session_id: "init_1", restaurant_id: 1, dish_id: 1, city: "Pune", latitude: 18.5204, longitude: 73.8407, visited_at: new Date().toISOString() },
@@ -716,16 +716,15 @@ export const db = {
       memoryStore.seed();
     }
     let list = [...memoryStore.restaurants].filter(r => r.status === 'active');
-    
-    // If not searching, filter strictly by city if provided
-    if (options?.city && options.city !== 'All' && !options?.search) {
+
+    if (options?.city && options.city !== 'All') {
       list = list.filter(r => r.city.toLowerCase() === options.city?.toLowerCase());
     }
 
-    // If searching, search across all spots and prioritize city matches
+    // If searching, ignore area constraint to allow finding spots anywhere in the city
     if (options?.search && options.search.trim()) {
       const q = options.search.toLowerCase().trim();
-      
+
       const normalize = (str: string) => {
         return str.toLowerCase()
           .replace(/ruplai|rupali|roopali/g, 'roopali')
@@ -749,47 +748,15 @@ export const db = {
       list = list.filter(r => {
         const fullText = normalize(`${r.name} ${r.area} ${r.city} ${r.address} ${r.description}`);
         if (fullText.includes(normalizedQuery)) return true;
-        
-        const spotWords = getWords(fullText);
 
-        // Count how many significant search tokens match
-        let matchCount = 0;
-        for (const token of searchTokens) {
-          const matched = spotWords.some(w => 
-            w === token || 
-            (token.length >= 4 && w.startsWith(token)) || 
-            (w.length >= 4 && token.startsWith(w))
-          );
-          if (matched) matchCount++;
-        }
-
-        // If multi-token query (e.g. "das khaman surat"), at least 2 tokens (or all) must match
-        if (searchTokens.length > 1) {
-          return matchCount >= Math.min(2, searchTokens.length);
-        }
-
-        // Single token search: must match a whole word or prefix of length >= 3
-        const singleToken = searchTokens[0];
-        if (!singleToken) return false;
-        return spotWords.some(w => 
-          w === singleToken || 
-          (singleToken.length >= 3 && w.startsWith(singleToken))
-        );
-      });
-
-      // Prioritize same-city matches if city is specified
-      if (options?.city && options.city !== 'All') {
-        const c = options.city.toLowerCase();
-        list.sort((a, b) => {
-          const aMatch = a.city.toLowerCase() === c ? 1 : 0;
-          const bMatch = b.city.toLowerCase() === c ? 1 : 0;
-          return bMatch - aMatch;
+        return searchTokens.some(token => {
+          return fullText.includes(token) || token.includes(normalize(r.name));
         });
-      }
+      });
     } else if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
       const a = options.area.toLowerCase().trim();
-      const filtered = list.filter(r => 
-        r.area.toLowerCase().includes(a) || 
+      const filtered = list.filter(r =>
+        r.area.toLowerCase().includes(a) ||
         a.includes(r.area.toLowerCase()) ||
         r.address.toLowerCase().includes(a) ||
         r.name.toLowerCase().includes(a)
@@ -1046,7 +1013,7 @@ export const db = {
     }
     if (options?.search) {
       const q = options.search.toLowerCase();
-      list = list.filter(p => 
+      list = list.filter(p =>
         p.name.toLowerCase().includes(q) ||
         p.mobile.includes(q) ||
         p.email.toLowerCase().includes(q) ||
