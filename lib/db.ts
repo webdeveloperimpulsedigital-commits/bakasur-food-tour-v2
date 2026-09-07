@@ -652,9 +652,9 @@ export function getDatabaseStatus() {
     engine: isMySQLHealthy ? 'MySQL' : 'Local Smart Engine (MySQL Schema Ready)',
     isMySQLHealthy,
     config: {
-      host: process.env.MYSQL_HOST || '127.0.0.1',
-      database: process.env.MYSQL_DATABASE || 'bakasur_food_tour',
-      user: process.env.MYSQL_USER || 'root'
+      host: process.env.MYSQL_HOST || process.env.DB_HOST || '127.0.0.1',
+      database: process.env.MYSQL_DATABASE || process.env.DB_NAME || 'bakasur_food_tour',
+      user: process.env.MYSQL_USER || process.env.DB_USER || 'root'
     }
   };
 }

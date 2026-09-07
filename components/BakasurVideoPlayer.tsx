@@ -11,6 +11,7 @@ interface BakasurVideoPlayerProps {
   dishName?: string;
   spice?: SpiceOption;
   soundEnabled?: boolean;
+  loop?: boolean;
   onToggleSound?: () => void;
   onVideoEnded?: () => void;
   posterImage?: string;
@@ -23,6 +24,7 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
   dishName,
   spice,
   soundEnabled = true,
+  loop = true,
   onToggleSound,
   onVideoEnded,
   posterImage = "/images/bakasur_pass.jpg"
@@ -81,8 +83,22 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
     }
   };
 
+  // Determine if eating video
+  const isEating = stageName === 'eating' || stageName === 'heartburn';
+  // If loop is not explicitly specified, do not loop during eating
+  const shouldLoop = loop !== undefined ? loop : !isEating;
+
   return (
-    <div className="relative w-full h-full min-h-full overflow-hidden bg-black flex items-center justify-center">
+    <div className="relative w-full h-full min-h-full overflow-hidden bg-slate-950 flex items-center justify-center">
+      {/* Ambient blurred backdrop to ensure seamless edge-to-edge look without black bars */}
+      <div 
+        className="absolute inset-0 bg-cover bg-center filter blur-2xl scale-125 opacity-40 pointer-events-none transition-all duration-700"
+        style={{
+          backgroundImage: `url(${posterImage})`,
+          backgroundColor: '#0f172a'
+        }}
+      />
+
       {/* Top Left: Sound Mute / Unmute Toggle Button */}
       {onToggleSound && (
         <button
@@ -100,16 +116,24 @@ export const BakasurVideoPlayer: React.FC<BakasurVideoPlayerProps> = ({
         </button>
       )}
 
-      {/* Auto-playing Bakasur Video Player */}
+      {/* When video ends in eating mode: subtle waiting for food badge */}
+      {isEating && isVideoEnded && (
+        <div className="absolute top-4 right-4 z-30 flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-black/70 border border-yellow-400/50 backdrop-blur-md text-yellow-300 text-xs font-bold shadow-lg animate-pulse pointer-events-none">
+          <span>🍽️</span>
+          <span>Food Finished • Waiting for Next Helping</span>
+        </div>
+      )}
+
+      {/* Main Bakasur Video Player */}
       <video
         ref={videoRef}
         src={videoUrl}
         playsInline
         autoPlay
-        loop
+        loop={shouldLoop}
         muted={isMuted}
-        onEnded={onVideoEnded}
-        className="w-full h-full object-cover object-top"
+        onEnded={handleVideoEnded}
+        className="w-full h-full object-cover object-bottom sm:object-center relative z-10"
       />
     </div>
   );
