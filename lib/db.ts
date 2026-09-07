@@ -140,6 +140,13 @@ export const INITIAL_RESTAURANTS: Omit<Restaurant, 'id'>[] = [
   { name: "Chitale Bandhu Mithaiwale", description: "Historic 1950 Bajirao Road institution world-famous for crunchy Bakarwadi, Mango Barfi, and Shrikhand.", address: "777, Sadashiv Peth, Bajirao Road", area: "Sadashiv Peth", city: "Pune", latitude: 18.5135, longitude: 73.8535, rating: 4.9, image: "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3200, status: 'active' },
 
 
+  // Thane & Mumbai Metropolitan Area
+  { name: "Gajanan Vadapav", description: "Thane's world-famous 1978 legendary institution celebrated for hot crispy Batata Vada served with signature yellow besan chutney & fried chillies.", address: "Chhatrapati Shivaji Path, Naupada, Thane West", area: "Naupada", city: "Thane", latitude: 19.1860, longitude: 72.9750, rating: 4.9, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2800, status: 'active' },
+  { name: "Mamledar Misal", description: "Thane's iconic spicy Misal landmark at Zilla Parishad since 1946, famous for fiery tarri misal, crispy farsan, and cold chaas.", address: "Opposite Zilla Parishad, Naupada, Thane West", area: "Naupada", city: "Thane", latitude: 19.1870, longitude: 72.9760, rating: 4.8, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2650, status: 'active' },
+  { name: "Prashant Corner", description: "Thane's celebrated heritage sweets and snack destination famous for special Puran Poli, Kaju Katli, and savory chaat.", address: "Mahavir Millenium, Panch Pakhadi, Thane West", area: "Panch Pakhadi", city: "Thane", latitude: 19.1920, longitude: 72.9680, rating: 4.9, image: "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3100, status: 'active' },
+  { name: "Hitchki Thane", description: "Viviana Mall's premier resto-bar known for Bollywood nostalgia, creative fusion dishes, and vibrant nightlife.", address: "Viviana Mall, Eastern Express Highway, Thane West", area: "Thane West", city: "Thane", latitude: 19.2080, longitude: 72.9720, rating: 4.8, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2200, status: 'active' },
+  { name: "Hotel Panchali", description: "Thane West station road favorite known for authentic Maharashtrian, North Indian, and coastal seafood curries.", address: "Gokhale Road, Naupada, Thane West", area: "Naupada", city: "Thane", latitude: 19.1850, longitude: 72.9740, rating: 4.7, image: "https://images.unsplash.com/photo-1545247181-516773cae754?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1750, status: 'active' },
+
   // Mumbai (19-23)
   { name: "Leopold Cafe & Bar", description: "Historic Mumbai landmark serving hearty Iranian, Continental, and Indian bites with vibrant heritage energy.", address: "Colaba Causeway, Apollo Bandar", area: "Colaba", city: "Mumbai", latitude: 18.9222, longitude: 72.8317, rating: 4.6, image: "https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 980, status: 'active' },
   { name: "Bademiya Street Kebabs", description: "Colaba's legendary late-night charcoal tandoor destination famous for spicy Baida Roti and juicy Seekh Rolls.", address: "Tulloch Road, Behind Taj Hotel, Colaba", area: "Colaba", city: "Mumbai", latitude: 18.9215, longitude: 72.8322, rating: 4.7, image: "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1890, status: 'active' },
@@ -168,12 +175,28 @@ export const INITIAL_RESTAURANTS: Omit<Restaurant, 'id'>[] = [
   { name: "Bhojohori Manna", description: "Authentic Bengali comfort food hub serving Kosha Mangsho, Chingri Malaikari, and Bhetki Paturi.", address: "18/1A, Ekdalia Rd, Ballygunge", area: "Ballygunge", city: "Kolkata", latitude: 22.5180, longitude: 88.3680, rating: 4.7, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1240, status: 'active' },
   { name: "Flurys Tearoom", description: "Park Street's heritage Victorian tearoom famous for English breakfast, rum balls, and chocolate pastry.", address: "18, Park Street, Park Street area", area: "Park Street", city: "Kolkata", latitude: 22.5525, longitude: 88.3530, rating: 4.6, image: "https://images.unsplash.com/photo-1509440159596-0249088772ff?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1390, status: 'active' },
 
-  // Hyderabad (39-43)
-  { name: "Paradise Heritage Biryani", description: "The world-famous home of authentic Hyderabadi Dum Biryani, bursting with saffron, spices, and tender meat.", address: "MG Road, Sappu Bagh, Secunderabad", area: "Secunderabad", city: "Hyderabad", latitude: 17.4416, longitude: 78.4983, rating: 4.5, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1640, status: 'active' },
-  { name: "Hotel Shadab", description: "Charminar's pride serving legendary Mutton Dum Biryani, Zabaan Nihari, and Chicken 65.", address: "High Court Road, Madina Circle, Charminar", area: "Charminar", city: "Hyderabad", latitude: 17.3680, longitude: 78.4730, rating: 4.8, image: "https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2400, status: 'active' },
-  { name: "Bawarchi Biryani", description: "RTC X Roads original Biryani sensation famous for double-masala Mutton Dum Biryani.", address: "RTC X Roads, Musheerabad, Chikkadpally", area: "RTC X Roads", city: "Hyderabad", latitude: 17.4020, longitude: 78.4910, rating: 4.7, image: "https://images.unsplash.com/photo-1563379091339-03b21ab4a4f8?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2190, status: 'active' },
-  { name: "Shah Ghouse Hotel", description: "Gachibowli's famous royal eatery celebrated for rich Mutton Haleem, Boti Kebab, and Special Biryani.", address: "Raidurgam, Gachibowli Main Rd", area: "Gachibowli", city: "Hyderabad", latitude: 17.4430, longitude: 78.3680, rating: 4.8, image: "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1980, status: 'active' },
-  { name: "Chutneys", description: "Jubilee Hills South Indian landmark famous for Guntur Idli, Babai Hotel Dosa, and 7 Signature Chutneys.", address: "Road No 3, Banjara Hills", area: "Banjara Hills", city: "Hyderabad", latitude: 17.4250, longitude: 78.4410, rating: 4.6, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1530, status: 'active' }
+  // Ahmedabad & Gujarat
+  { name: "Manek Chowk Food Street", description: "Ahmedabad's legendary night food paradise famous for Gwalior Dosa, Chocolate Cheese Sandwich, and Ashrafi Kulfi.", address: "Manek Chowk, Old City, Danapidth", area: "Manek Chowk", city: "Ahmedabad", latitude: 23.0225, longitude: 72.5870, rating: 4.8, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2600, status: 'active' },
+  { name: "Agashiye Heritage Gujarati Thali", description: "Iconic rooftop heritage hotel celebrating authentic royal Gujarati thali with 20+ handcrafted dishes.", address: "The House of MG, Opp Sidi Saiyyed Mosque", area: "Lal Darwaja", city: "Ahmedabad", latitude: 23.0270, longitude: 72.5810, rating: 4.9, image: "https://images.unsplash.com/photo-1545247181-516773cae754?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2100, status: 'active' },
+  { name: "Honest Pav Bhaji & Street Food", description: "Gujarat's beloved food chain famous for rich Spiced Butter Pav Bhaji, Pulav, and Grilled Sandwiches.", address: "Panchvati Circle, CG Road, Navrangpura", area: "Navrangpura", city: "Ahmedabad", latitude: 23.0330, longitude: 72.5600, rating: 4.7, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 1950, status: 'active' },
+  { name: "Das Khaman Outlet", description: "Ahmedabad's 1922 institution world-famous for spongy melt-in-mouth Nylon Khaman, Sev Khamani, and Tam Tam.", address: "Nehru Nagar Circle, Ambawadi", area: "Ambawadi", city: "Ahmedabad", latitude: 23.0200, longitude: 72.5430, rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2300, status: 'active' },
+
+  // Jaipur & Rajasthan
+  { name: "Rawat Mishthan Bhandar", description: "Jaipur's world-famous heritage sweet shop legendary for blistering hot spicy Pyaaz Kachori and Mawa Kachori.", address: "Opposite Polovictory Cinema, Station Road", area: "Sindhi Camp", city: "Jaipur", latitude: 26.9210, longitude: 75.7980, rating: 4.9, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3400, status: 'active' },
+  { name: "Chokhi Dhani Royal Village", description: "Celebrated Rajasthani cultural resort offering royal Dal Baati Churma, Gatte Ki Sabzi, and Ker Sangri feasts.", address: "12 Miles Tonk Road, Via Vatika", area: "Tonk Road", city: "Jaipur", latitude: 26.7650, longitude: 75.8230, rating: 4.8, image: "https://images.unsplash.com/photo-1545247181-516773cae754?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2900, status: 'active' },
+  { name: "Laxmi Mishthan Bhandar (LMB)", description: "Johari Bazar's historic 1727 institution renowned for authentic Rajasthani Royal Thali and Ghewar.", address: "Johari Bazar, Pink City", area: "Pink City", city: "Jaipur", latitude: 26.9180, longitude: 75.8280, rating: 4.7, image: "https://images.unsplash.com/photo-1528975604071-b4dc52a2d18c?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2200, status: 'active' },
+
+  // Lucknow & Uttar Pradesh
+  { name: "Tunday Kababi", description: "Historic 1905 Aminabad institution world-famous for 160-spice melt-in-mouth Galouti Kebabs & Mughlai Parathas.", address: "168/6, Nazirabad Rd, Khayali Ganj, Aminabad", area: "Aminabad", city: "Lucknow", latitude: 26.8490, longitude: 80.9250, rating: 4.9, image: "https://images.unsplash.com/photo-1599488615731-7e5c2823ff28?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3800, status: 'active' },
+  { name: "Dastarkhwan Traditional Kitchen", description: "Hazratganj's beloved Mughlai kitchen serving legendary Chicken Masala, Boti Kebab, and Roomali Roti.", address: "29, BN Road, Lalbagh, Hazratganj", area: "Hazratganj", city: "Lucknow", latitude: 26.8510, longitude: 80.9380, rating: 4.8, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2400, status: 'active' },
+
+  // Indore & Madhya Pradesh
+  { name: "Sarafa Night Food Market", description: "Indore's world-famous midnight jewelry street turning into culinary hub for Bhutte Ka Kees and Garadu.", address: "Sarafa Bazar, Rajwada", area: "Rajwada", city: "Indore", latitude: 22.7180, longitude: 75.8550, rating: 4.9, image: "https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3600, status: 'active' },
+  { name: "Chhappan Dukan (56 Shops)", description: "Indore's iconic 56-shop food lane celebrating Johnny Hot Dog, Vijay Chaat Khopra Patties, and Shikanji.", address: "56 Dukan, New Palasia", area: "New Palasia", city: "Indore", latitude: 22.7240, longitude: 75.8820, rating: 4.8, image: "https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 3100, status: 'active' },
+
+  // Goa
+  { name: "Fisherman's Wharf", description: "Goa's riverside culinary paradise serving King Crab Peri Peri, Prawn Balchao, and Goan Fish Curry.", address: "At the River Sal, Mobor Beach, Cavelossim", area: "Cavelossim", city: "Goa", latitude: 15.1630, longitude: 73.9480, rating: 4.8, image: "https://images.unsplash.com/photo-1534422298391-e4f8c172dddb?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2700, status: 'active' },
+  { name: "Ritz Classic Panjim", description: "Panaji's premier seafood institution celebrated for legendary Goan Fish Thali with Fried Surmai and Tisreo.", address: "18th June Road, Panaji", area: "Panaji", city: "Goa", latitude: 15.4980, longitude: 73.8270, rating: 4.9, image: "https://images.unsplash.com/photo-1545247181-516773cae754?w=800&auto=format&fit=crop&q=80", is_campaign_active: 1, total_visits: 2950, status: 'active' }
 ];
 
 export const INITIAL_DISHES: Omit<Dish, 'id'>[] = [
@@ -694,11 +717,12 @@ export const db = {
     }
     let list = [...memoryStore.restaurants].filter(r => r.status === 'active');
     
-    if (options?.city && options.city !== 'All') {
+    // If not searching, filter strictly by city if provided
+    if (options?.city && options.city !== 'All' && !options?.search) {
       list = list.filter(r => r.city.toLowerCase() === options.city?.toLowerCase());
     }
 
-    // If searching, ignore area constraint to allow finding spots anywhere in the city
+    // If searching, search across all spots and prioritize city matches
     if (options?.search && options.search.trim()) {
       const q = options.search.toLowerCase().trim();
       
@@ -720,14 +744,48 @@ export const db = {
       const significantWords = rawWords.filter(w => !noiseWords.has(w));
       const searchTokens = (significantWords.length > 0 ? significantWords : rawWords).map(w => normalize(w));
 
+      const getWords = (s: string) => s.split(/[^a-z0-9]+/).filter(w => w.length > 0);
+
       list = list.filter(r => {
         const fullText = normalize(`${r.name} ${r.area} ${r.city} ${r.address} ${r.description}`);
         if (fullText.includes(normalizedQuery)) return true;
         
-        return searchTokens.some(token => {
-          return fullText.includes(token) || token.includes(normalize(r.name));
-        });
+        const spotWords = getWords(fullText);
+
+        // Count how many significant search tokens match
+        let matchCount = 0;
+        for (const token of searchTokens) {
+          const matched = spotWords.some(w => 
+            w === token || 
+            (token.length >= 4 && w.startsWith(token)) || 
+            (w.length >= 4 && token.startsWith(w))
+          );
+          if (matched) matchCount++;
+        }
+
+        // If multi-token query (e.g. "das khaman surat"), at least 2 tokens (or all) must match
+        if (searchTokens.length > 1) {
+          return matchCount >= Math.min(2, searchTokens.length);
+        }
+
+        // Single token search: must match a whole word or prefix of length >= 3
+        const singleToken = searchTokens[0];
+        if (!singleToken) return false;
+        return spotWords.some(w => 
+          w === singleToken || 
+          (singleToken.length >= 3 && w.startsWith(singleToken))
+        );
       });
+
+      // Prioritize same-city matches if city is specified
+      if (options?.city && options.city !== 'All') {
+        const c = options.city.toLowerCase();
+        list.sort((a, b) => {
+          const aMatch = a.city.toLowerCase() === c ? 1 : 0;
+          const bMatch = b.city.toLowerCase() === c ? 1 : 0;
+          return bMatch - aMatch;
+        });
+      }
     } else if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
       const a = options.area.toLowerCase().trim();
       const filtered = list.filter(r => 
@@ -800,16 +858,6 @@ export const db = {
     if (options?.search) {
       const q = options.search.toLowerCase();
       list = list.filter(d => d.name.toLowerCase().includes(q) || d.description.toLowerCase().includes(q));
-    }
-    if (list.length === 0) {
-      const rest = await this.getRestaurantById(restaurantId);
-      const name = rest ? rest.name : 'Special';
-      return [
-        { id: restaurantId * 100 + 1, restaurant_id: restaurantId, name: `${name} Special Masaledaar Thali`, description: `Special signature feast from ${name}`, price: 280, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 99, is_recommended: 1, status: 'active' as const },
-        { id: restaurantId * 100 + 2, restaurant_id: restaurantId, name: `${name} Famous Crispy Dosa / Feast`, description: `Crispy golden street specialty with spicy masala`, price: 160, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80", rating: 4.8, popularity: 95, is_recommended: 1, status: 'active' as const },
-        { id: restaurantId * 100 + 3, restaurant_id: restaurantId, name: "Spicy Schezwan / Tarri Special", description: "Hot fiery red spice specialty to challenge Bakasur", price: 180, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 97, is_recommended: 1, status: 'active' as const },
-        { id: restaurantId * 100 + 4, restaurant_id: restaurantId, name: "Signature Chai / Thick Shake", description: "Rich comforting beverage to complement the feast", price: 60, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80", rating: 4.7, popularity: 92, is_recommended: 1, status: 'active' as const }
-      ];
     }
     return list.sort((a, b) => b.popularity - a.popularity);
   },

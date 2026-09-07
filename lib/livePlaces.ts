@@ -8,6 +8,12 @@ function pickCuisineImage(name: string): string {
   if (n.includes('dosa') || n.includes('idli') || n.includes('udupi') || n.includes('south') || n.includes('bhavan') || n.includes('wada') || n.includes('vada')) {
     return 'https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=800&auto=format&fit=crop&q=80';
   }
+  if (n.includes('khaman') || n.includes('dhokla') || n.includes('fafda') || n.includes('jalebi') || n.includes('locho') || n.includes('gujarat') || n.includes('kathiyawad') || n.includes('undhiyu')) {
+    return 'https://images.unsplash.com/photo-1589301760014-d929f3979dbc?w=800&auto=format&fit=crop&q=80';
+  }
+  if (n.includes('dal baati') || n.includes('kachori') || n.includes('ghevar') || n.includes('rajasthan') || n.includes('marwar') || n.includes('chokhi dhani') || n.includes('rawat')) {
+    return 'https://images.unsplash.com/photo-1601050690597-df0568f70950?w=800&auto=format&fit=crop&q=80';
+  }
   if (n.includes('misal') || n.includes('katakirr') || n.includes('maratha') || n.includes('kolhapuri') || n.includes('bedekar')) {
     return 'https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=800&auto=format&fit=crop&q=80';
   }
@@ -73,7 +79,7 @@ export async function searchLivePlaces(options: {
   lat?: number;
   lng?: number;
 }): Promise<Restaurant[]> {
-  const { query, city = 'Pune', lat, lng } = options;
+  const { query, city = '', lat, lng } = options;
   if (!query && isNaN(lat || NaN)) return [];
 
   try {
@@ -81,17 +87,18 @@ export async function searchLivePlaces(options: {
 
     if (query && query.trim()) {
       const q = query.trim();
-      // Try primary search: "query city"
-      items = await queryNominatim(`${q} ${city}`, 6);
+      
+      // 1. First search EXACT user query across India (e.g. "gajanan vadapav thane", "mamledar misal thane", "anand stall vile parle")
+      items = await queryNominatim(q, 8);
 
-      // If empty and user didn't write city in query, try "query restaurant city"
-      if (items.length === 0 && !q.toLowerCase().includes('hotel') && !q.toLowerCase().includes('restaurant')) {
-        items = await queryNominatim(`hotel ${q} ${city}`, 6);
+      // 2. If nothing found and city was provided without already being in query, try "query city"
+      if (items.length === 0 && city && !q.toLowerCase().includes(city.toLowerCase())) {
+        items = await queryNominatim(`${q} ${city}`, 6);
       }
 
-      // If still empty, try just "query"
-      if (items.length === 0) {
-        items = await queryNominatim(q, 4);
+      // 3. If still empty, try "hotel/restaurant query"
+      if (items.length === 0 && !q.toLowerCase().includes('hotel') && !q.toLowerCase().includes('restaurant')) {
+        items = await queryNominatim(`restaurant ${q}`, 6);
       }
     } else if (!isNaN(lat || NaN) && !isNaN(lng || NaN)) {
       items = await queryNominatim(`restaurant near ${lat},${lng}`, 6);
@@ -112,15 +119,15 @@ export async function searchLivePlaces(options: {
       if (seenNames.has(lower)) continue;
       seenNames.add(lower);
 
-      const sublocality = addr.suburb || addr.neighbourhood || addr.road || addr.quarter || addr.residential || `${city} Area`;
-      const cityName = addr.city || addr.town || city;
-      const itemLat = parseFloat(item.lat || String(lat || 18.5204));
-      const itemLng = parseFloat(item.lon || String(lng || 73.8407));
+      const cityName = addr.city || addr.town || addr.municipality || addr.city_district || addr.county || addr.state_district || city || 'Local';
+      const sublocality = addr.suburb || addr.neighbourhood || addr.quarter || addr.residential || addr.road || addr.village || `${cityName}`;
+      const itemLat = parseFloat(item.lat || String(lat || 19.1860));
+      const itemLng = parseFloat(item.lon || String(lng || 72.9750));
 
       liveSpots.push({
         id: 700000 + i + Math.floor(Math.random() * 1000),
         name: cleanName,
-        description: `Live culinary spot in ${sublocality}, ${cityName}`,
+        description: `Famous food spot in ${sublocality}, ${cityName}`,
         address: `${sublocality}, ${cityName}`,
         area: sublocality,
         city: cityName,
@@ -139,3 +146,4 @@ export async function searchLivePlaces(options: {
     return [];
   }
 }
+

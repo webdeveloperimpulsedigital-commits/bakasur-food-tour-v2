@@ -33,8 +33,8 @@ export const StepDish: React.FC<StepDishProps> = ({
   selectedDish,
   selectedSpice,
   onSelectDish,
-  onSelectSpice,
   onFeedBakasur,
+  onSelectSpice,
   onBack
 }) => {
   const [dishes, setDishes] = useState<Dish[]>([]);
@@ -52,10 +52,10 @@ export const StepDish: React.FC<StepDishProps> = ({
       });
       const res = await fetch(`/api/restaurants/${restaurant.id}/dishes?${queryParams.toString()}`);
       const json = await res.json();
-      if (json.success && Array.isArray(json.data)) {
+      if (json.success && Array.isArray(json.data) && json.data.length > 0) {
         setDishes(json.data);
         // Auto-select first recommended dish if none selected yet
-        if (!selectedDish && json.data.length > 0) {
+        if (!selectedDish) {
           onSelectDish(json.data[0]);
         }
       }
@@ -70,9 +70,11 @@ export const StepDish: React.FC<StepDishProps> = ({
     fetchDishes();
   }, [fetchDishes]);
 
-  // Filtered dishes based on search query
-  const filteredDishes = useMemo(() => {
-    if (!searchQuery.trim()) return dishes;
+  // Display top 3 dishes by default; or all matching dishes when searching
+  const displayedDishes = useMemo(() => {
+    if (!searchQuery.trim()) {
+      return dishes.slice(0, 3); // Show exactly top 3 when not searching
+    }
     const q = searchQuery.toLowerCase().trim();
     return dishes.filter(d => 
       d.name.toLowerCase().includes(q) || 
@@ -80,7 +82,7 @@ export const StepDish: React.FC<StepDishProps> = ({
     );
   }, [dishes, searchQuery]);
 
-  // Handle selecting an official dish
+  // Handle selecting a dish
   const handleSelectDish = (dish: Dish) => {
     onSelectDish(dish);
   };
@@ -91,26 +93,25 @@ export const StepDish: React.FC<StepDishProps> = ({
     const customItem = {
       name: customName.trim(),
       id: Math.floor(Math.random() * 90000) + 10000,
-      price: 160
+      price: 180
     };
     onSelectDish(customItem);
   };
 
   const activeDishName = selectedDish?.name || '';
-  const isCustomMatch = searchQuery.trim() && !filteredDishes.some(d => d.name.toLowerCase() === searchQuery.trim().toLowerCase());
+  const isCustomMatch = searchQuery.trim() && !displayedDishes.some(d => d.name.toLowerCase() === searchQuery.trim().toLowerCase());
 
   return (
     <div className="w-full h-full flex flex-col justify-between min-h-0 text-white gap-2">
-      {/* Top Header - Fixed at Top */}
+      {/* Top Header - Restaurant Title & Change Spot */}
       <div className="shrink-0 flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 flex-wrap">
             <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
-              {restaurant.name} Menu:
+              {restaurant.name}:
             </h2>
-            <span className="text-[9px] font-bold text-emerald-300 bg-emerald-950/70 border border-emerald-500/40 px-1.5 py-0.5 rounded-full flex items-center gap-1">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              LIVE MENU
+            <span className="text-[9px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full flex items-center gap-1">
+              <span>👑 Top 3 Specialties</span>
             </span>
           </div>
           <p className="text-[10px] sm:text-[11px] text-blue-200 font-medium leading-snug">
@@ -122,7 +123,7 @@ export const StepDish: React.FC<StepDishProps> = ({
           <button
             onClick={onBack}
             type="button"
-            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold shrink-0 transition-all border border-white/15"
+            className="flex items-center gap-1 px-2 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[10px] font-bold shrink-0 transition-all border border-white/15 cursor-pointer"
           >
             <ArrowLeft className="w-3 h-3" />
             <span>Change Spot</span>
@@ -130,27 +131,30 @@ export const StepDish: React.FC<StepDishProps> = ({
         )}
       </div>
 
-      {/* Dish Search & Custom Dish Input Box */}
+      {/* Dish Search Bar */}
       <div className="shrink-0 relative z-10">
-        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`🔍 Search menu or type ANY dish from ${restaurant.name}...`}
-          className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery('')}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5"
-          >
-            ✕
-          </button>
-        )}
+        <div className="relative">
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={`Search menu or type any dish from ${restaurant.name}...`}
+            className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
+          />
+          {searchQuery && (
+            <button
+              type="button"
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5"
+            >
+              ✕
+            </button>
+          )}
+        </div>
       </div>
 
-      {/* Custom Dish Quick Add Banner if user typed something new */}
+      {/* Custom Dish Quick Add Banner if user typed something not on menu */}
       {isCustomMatch && (
         <div
           onClick={() => handleSelectCustomDish(searchQuery)}
@@ -171,22 +175,23 @@ export const StepDish: React.FC<StepDishProps> = ({
         </div>
       )}
 
-      {/* Dishes List (All Authentic Live Menu Items) - Scrollable Middle Area */}
+      {/* Dishes List (Top 3 or Filtered Search Results) - Scrollable */}
       <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 flex flex-col gap-1.5 relative z-10">
         {isLoading && dishes.length === 0 ? (
           <div className="flex flex-col gap-1.5">
             {[1, 2, 3].map(i => (
-              <div key={i} className="h-12 rounded-xl bg-white/10 animate-pulse" />
+              <div key={i} className="h-14 rounded-xl bg-white/10 animate-pulse" />
             ))}
           </div>
-        ) : filteredDishes.length === 0 && !isCustomMatch ? (
+        ) : displayedDishes.length === 0 && !isCustomMatch ? (
           <div className="p-3 text-center rounded-xl bg-white/10 border border-white/15">
             <p className="text-xs font-bold text-blue-100">No matching dishes for &quot;{searchQuery}&quot;</p>
-            <p className="text-[10px] text-blue-200 mt-0.5">Type the dish name above to add it custom!</p>
+            <p className="text-[10px] text-blue-200 mt-0.5">Type above to feed Bakasur any custom dish!</p>
           </div>
         ) : (
-          filteredDishes.map((dish) => {
+          displayedDishes.map((dish, idx) => {
             const isSelected = selectedDish?.name.toLowerCase() === dish.name.toLowerCase();
+            const rankLabel = !searchQuery.trim() ? (idx === 0 ? '🔥 #1 Signature' : idx === 1 ? '⭐ #2 Popular' : '✨ #3 Must Try') : null;
             return (
               <div
                 key={dish.id}
@@ -197,9 +202,9 @@ export const StepDish: React.FC<StepDishProps> = ({
                     : 'border-white/20 hover:border-[#D23002]/50 hover:bg-slate-50 bg-white shadow-sm'
                 }`}
               >
-                {/* Left info */}
+                {/* Left image & details */}
                 <div className="flex items-center gap-2.5 min-w-0">
-                  <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 bg-slate-100 flex items-center justify-center">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 bg-slate-100 flex items-center justify-center">
                     {dish.image ? (
                       <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
                     ) : (
@@ -211,6 +216,11 @@ export const StepDish: React.FC<StepDishProps> = ({
                       <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#D23002]' : 'text-slate-900'}`}>
                         {dish.name}
                       </h4>
+                      {rankLabel && (
+                        <span className="text-[8px] font-extrabold text-amber-800 bg-amber-100 px-1 py-0.2 rounded border border-amber-200">
+                          {rankLabel}
+                        </span>
+                      )}
                       {dish.price ? (
                         <span className="text-[9px] font-extrabold text-slate-600 bg-slate-100 px-1 py-0.2 rounded border border-slate-200">
                           ₹{dish.price}
@@ -230,9 +240,9 @@ export const StepDish: React.FC<StepDishProps> = ({
                     e.stopPropagation();
                     handleSelectDish(dish);
                   }}
-                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer brand-font ${
                     isSelected
-                      ? 'bg-[#D23002] text-white shadow-sm'
+                      ? 'bg-[#D23002] text-white shadow-md'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                   }`}
                 >
@@ -244,7 +254,7 @@ export const StepDish: React.FC<StepDishProps> = ({
         )}
       </div>
 
-      {/* Spice Level Selector - Compact Row */}
+      {/* Spice Level Selector */}
       <div className="shrink-0 flex flex-col gap-1 pt-0.5 relative z-10">
         <div className="flex items-center justify-between text-[10px]">
           <span className="font-extrabold text-[#ff8566] uppercase tracking-wider flex items-center gap-1">
@@ -256,7 +266,7 @@ export const StepDish: React.FC<StepDishProps> = ({
           </span>
         </div>
 
-        {/* 3 Spice Pill Buttons Side by Side */}
+        {/* 3 Spice Pill Buttons */}
         <div className="grid grid-cols-3 gap-1.5">
           {SPICE_LEVELS.map((sp) => {
             const isSelected = selectedSpice.id === sp.id;
@@ -279,13 +289,13 @@ export const StepDish: React.FC<StepDishProps> = ({
         </div>
       </div>
 
-      {/* Navigation Footer - Anchored at the bottom */}
+      {/* Navigation Footer */}
       <div className="shrink-0 pt-0.5 relative z-10">
         <button
           onClick={() => onFeedBakasur(activeDishName)}
           disabled={!activeDishName.trim()}
           type="button"
-          className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide border border-white/20"
+          className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide border border-white/20 active:scale-[0.99]"
         >
           <span>Feed Bakasur: {activeDishName ? `"${activeDishName.slice(0, 20)}${activeDishName.length > 20 ? '...' : ''}"` : 'Pick a Dish'} 🍛</span>
           <ArrowRight className="w-4 h-4" />
@@ -294,3 +304,4 @@ export const StepDish: React.FC<StepDishProps> = ({
     </div>
   );
 };
+
