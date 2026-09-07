@@ -210,9 +210,9 @@ export const StepCity: React.FC<StepCityProps> = ({
   }, [availableAreas, areaSearchQuery]);
 
   return (
-    <div className="w-full flex flex-col gap-2 sm:gap-2.5 text-white">
+    <div className="w-full h-full flex flex-col justify-between min-h-0 text-white gap-2">
       {/* Top Section Header with Compact Area Pill */}
-      <div className="flex items-center justify-between gap-2">
+      <div className="shrink-0 flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
           <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight">
             Kahan Khilaoge Bakasur Ko?
@@ -236,159 +236,159 @@ export const StepCity: React.FC<StepCityProps> = ({
         </button>
       </div>
 
-      {/* Unified Search Bar */}
-      <div className="relative z-10">
-        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`🔍 Search ALL 40+ Pune spots (e.g. Roopali, Jagdamb, Ishan, Katakirr, Goodluck)...`}
-          className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
-        />
-        {searchQuery && (
-          <button
-            onClick={() => setSearchQuery('')}
-            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5"
-          >
-            ✕
-          </button>
-        )}
-      </div>
-
-      {/* Quick Category / Neighborhood Filter Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-[10px] relative z-10">
-        {[
-          { label: "🌟 All Pune Spots", query: "" },
-          { label: "🔥 Sinhagad & Nanded", query: "sinhagad" },
-          { label: "📍 FC & Deccan", query: "fc road" },
-          { label: "🍛 Misal Addas", query: "misal" },
-          { label: "🍗 Non-Veg / Biryani", query: "biryani" },
-          { label: "☕ Irani Chai & Cafes", query: "cafe" },
-          { label: "🥞 Dosa & South", query: "dosa" }
-        ].map(chip => {
-          const isActive = (chip.query === '' && searchQuery === '') || (chip.query !== '' && searchQuery.toLowerCase() === chip.query);
-          return (
+      {/* Unified Search & Category Filter Chips */}
+      <div className="shrink-0 flex flex-col gap-1.5">
+        <div className="relative z-10">
+          <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder={`🔍 Search ALL 40+ Pune spots (e.g. Roopali, Jagdamb, Ishan, Katakirr)...`}
+            className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
+          />
+          {searchQuery && (
             <button
-              key={chip.label}
-              type="button"
-              onClick={() => setSearchQuery(chip.query)}
-              className={`px-2 py-1 rounded-lg font-bold shrink-0 transition-all cursor-pointer border ${
-                isActive
-                  ? 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold shadow-sm'
-                  : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
-              }`}
+              onClick={() => setSearchQuery('')}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5"
             >
-              {chip.label}
+              ✕
             </button>
-          );
-        })}
-      </div>
-
-      {/* Recommended Nearby Food Joints List */}
-      <div className="flex flex-col gap-1 min-h-0 relative z-10">
-        <div className="flex flex-col gap-1.5 max-h-[175px] sm:max-h-[250px] overflow-y-auto pr-0.5">
-          {isLoadingSpots && nearbyRestaurants.length === 0 ? (
-            <div className="flex flex-col gap-1.5">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-12 rounded-xl bg-white/10 animate-pulse" />
-              ))}
-            </div>
-          ) : nearbyRestaurants.length === 0 ? (
-            <div className="p-3 text-center rounded-xl bg-white/10 border border-white/15">
-              {searchQuery.trim() ? (
-                <div className="flex flex-col items-center gap-1.5">
-                  <p className="text-xs font-bold text-blue-100">
-                    No pre-listed spot found for &quot;{searchQuery}&quot;
-                  </p>
-                  <p className="text-[10px] text-blue-200">
-                    Bakasur can eat anywhere! Add this spot directly:
-                  </p>
-                  <button
-                    onClick={handleAddCustomRestaurant}
-                    type="button"
-                    className="py-1.5 px-3 rounded-lg bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1 cursor-pointer"
-                  >
-                    <span>➕ Feed Bakasur at &quot;{searchQuery}&quot;</span>
-                  </button>
-                </div>
-              ) : (
-                <>
-                  <p className="text-xs font-bold text-blue-100">No spots found in &quot;{currentArea}&quot;.</p>
-                  <button
-                    onClick={() => handleAreaSelect('All Areas')}
-                    className="text-xs font-bold text-[#ff6b4a] hover:underline mt-1 block mx-auto"
-                  >
-                    View all in {selectedCity} →
-                  </button>
-                </>
-              )}
-            </div>
-          ) : (
-            nearbyRestaurants.map((rest) => {
-              const isSelected = selectedRestaurant?.id === rest.id;
-              return (
-                <div
-                  key={rest.id}
-                  onClick={() => onSelectRestaurant(rest)}
-                  className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 text-slate-900 ${
-                    isSelected
-                      ? 'border-2 border-[#D23002] bg-orange-50/95 shadow-md scale-[1.01]'
-                      : 'border-white/20 hover:border-[#D23002]/50 hover:bg-slate-50 bg-white shadow-sm'
-                  }`}
-                >
-                  {/* Left Thumbnail & Details */}
-                  <div className="flex items-center gap-2.5 min-w-0">
-                    <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 shadow-inner">
-                      <img src={rest.image} alt={rest.name} className="w-full h-full object-cover" />
-                    </div>
-
-                    <div className="min-w-0">
-                      <div className="flex items-center gap-1.5 flex-wrap">
-                        <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#D23002]' : 'text-slate-900'}`}>
-                          {rest.name}
-                        </h4>
-                        <span className="flex items-center text-[9px] font-bold text-amber-700 bg-amber-100 px-1 py-0.2 rounded">
-                          ★ {rest.rating}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 font-semibold mt-0.5 truncate">
-                        <span className="text-[#023093] font-bold bg-blue-100/70 px-1 rounded truncate">
-                          📍 {rest.area || rest.city}
-                        </span>
-                        <span>•</span>
-                        <span className="text-emerald-700 font-mono font-bold">
-                          ⚡ {(rest as Restaurant & { distanceKm?: number }).distanceKm ? `${(rest as Restaurant & { distanceKm?: number }).distanceKm} km away` : 'Nearby'}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-
-                  {/* Right Select CTA */}
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      onSelectRestaurant(rest);
-                    }}
-                    className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer brand-font ${
-                      isSelected
-                        ? 'bg-[#D23002] text-white shadow-md'
-                        : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
-                    }`}
-                  >
-                    {isSelected ? '✓ Selected' : 'Select'}
-                  </button>
-                </div>
-              );
-            })
           )}
+        </div>
+
+        {/* Category Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-[10px] relative z-10">
+          {[
+            { label: "🌟 All Pune Spots", query: "" },
+            { label: "🔥 Sinhagad & Nanded", query: "sinhagad" },
+            { label: "📍 FC & Deccan", query: "fc road" },
+            { label: "🍛 Misal Addas", query: "misal" },
+            { label: "🍗 Non-Veg / Biryani", query: "biryani" },
+            { label: "☕ Irani Chai & Cafes", query: "cafe" },
+            { label: "🥞 Dosa & South", query: "dosa" }
+          ].map(chip => {
+            const isActive = (chip.query === '' && searchQuery === '') || (chip.query !== '' && searchQuery.toLowerCase() === chip.query);
+            return (
+              <button
+                key={chip.label}
+                type="button"
+                onClick={() => setSearchQuery(chip.query)}
+                className={`px-2 py-1 rounded-lg font-bold shrink-0 transition-all cursor-pointer border ${
+                  isActive
+                    ? 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold shadow-sm'
+                    : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
+                }`}
+              >
+                {chip.label}
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Navigation Footer */}
-      <div className="pt-0.5 relative z-10">
+      {/* Recommended Nearby Food Joints List - Scrollable Middle Area */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 flex flex-col gap-1.5 relative z-10">
+        {isLoadingSpots && nearbyRestaurants.length === 0 ? (
+          <div className="flex flex-col gap-1.5">
+            {[1, 2, 3].map(i => (
+              <div key={i} className="h-12 rounded-xl bg-white/10 animate-pulse" />
+            ))}
+          </div>
+        ) : nearbyRestaurants.length === 0 ? (
+          <div className="p-3 text-center rounded-xl bg-white/10 border border-white/15">
+            {searchQuery.trim() ? (
+              <div className="flex flex-col items-center gap-1.5">
+                <p className="text-xs font-bold text-blue-100">
+                  No pre-listed spot found for &quot;{searchQuery}&quot;
+                </p>
+                <p className="text-[10px] text-blue-200">
+                  Bakasur can eat anywhere! Add this spot directly:
+                </p>
+                <button
+                  onClick={handleAddCustomRestaurant}
+                  type="button"
+                  className="py-1.5 px-3 rounded-lg bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs shadow-md transition-all flex items-center justify-center gap-1 cursor-pointer"
+                >
+                  <span>➕ Feed Bakasur at &quot;{searchQuery}&quot;</span>
+                </button>
+              </div>
+            ) : (
+              <>
+                <p className="text-xs font-bold text-blue-100">No spots found in &quot;{currentArea}&quot;.</p>
+                <button
+                  onClick={() => handleAreaSelect('All Areas')}
+                  className="text-xs font-bold text-[#ff6b4a] hover:underline mt-1 block mx-auto"
+                >
+                  View all in {selectedCity} →
+                </button>
+              </>
+            )}
+          </div>
+        ) : (
+          nearbyRestaurants.map((rest) => {
+            const isSelected = selectedRestaurant?.id === rest.id;
+            return (
+              <div
+                key={rest.id}
+                onClick={() => onSelectRestaurant(rest)}
+                className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 text-slate-900 ${
+                  isSelected
+                    ? 'border-2 border-[#D23002] bg-orange-50/95 shadow-md scale-[1.01]'
+                    : 'border-white/20 hover:border-[#D23002]/50 hover:bg-slate-50 bg-white shadow-sm'
+                }`}
+              >
+                {/* Left Thumbnail & Details */}
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 shadow-inner">
+                    <img src={rest.image} alt={rest.name} className="w-full h-full object-cover" />
+                  </div>
+
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-1.5 flex-wrap">
+                      <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#D23002]' : 'text-slate-900'}`}>
+                        {rest.name}
+                      </h4>
+                      <span className="flex items-center text-[9px] font-bold text-amber-700 bg-amber-100 px-1 py-0.2 rounded">
+                        ★ {rest.rating}
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 font-semibold mt-0.5 truncate">
+                      <span className="text-[#023093] font-bold bg-blue-100/70 px-1 rounded truncate">
+                        📍 {rest.area || rest.city}
+                      </span>
+                      <span>•</span>
+                      <span className="text-emerald-700 font-mono font-bold">
+                        ⚡ {(rest as Restaurant & { distanceKm?: number }).distanceKm ? `${(rest as Restaurant & { distanceKm?: number }).distanceKm} km away` : 'Nearby'}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Right Select CTA */}
+                <button
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    onSelectRestaurant(rest);
+                  }}
+                  className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer brand-font ${
+                    isSelected
+                      ? 'bg-[#D23002] text-white shadow-md'
+                      : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
+                  }`}
+                >
+                  {isSelected ? '✓ Selected' : 'Select'}
+                </button>
+              </div>
+            );
+          })
+        )}
+      </div>
+
+      {/* Navigation Footer - Anchored at the bottom */}
+      <div className="shrink-0 pt-1 relative z-10">
         <button
           onClick={onNext}
           disabled={!selectedRestaurant}

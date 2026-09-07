@@ -100,9 +100,9 @@ export const StepDish: React.FC<StepDishProps> = ({
   const isCustomMatch = searchQuery.trim() && !filteredDishes.some(d => d.name.toLowerCase() === searchQuery.trim().toLowerCase());
 
   return (
-    <div className="w-full flex flex-col gap-2 sm:gap-2.5 text-white">
-      {/* Top Header */}
-      <div className="flex items-center justify-between gap-2">
+    <div className="w-full h-full flex flex-col justify-between min-h-0 text-white gap-2">
+      {/* Top Header - Fixed at Top */}
+      <div className="shrink-0 flex items-center justify-between gap-2">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-1.5 flex-wrap">
             <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
@@ -131,7 +131,7 @@ export const StepDish: React.FC<StepDishProps> = ({
       </div>
 
       {/* Dish Search & Custom Dish Input Box */}
-      <div className="relative z-10">
+      <div className="shrink-0 relative z-10">
         <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
           type="text"
@@ -154,7 +154,7 @@ export const StepDish: React.FC<StepDishProps> = ({
       {isCustomMatch && (
         <div
           onClick={() => handleSelectCustomDish(searchQuery)}
-          className="p-2 rounded-xl bg-amber-500/20 border border-amber-400/50 hover:bg-amber-500/30 cursor-pointer transition-all flex items-center justify-between gap-2 text-white"
+          className="shrink-0 p-2 rounded-xl bg-amber-500/20 border border-amber-400/50 hover:bg-amber-500/30 cursor-pointer transition-all flex items-center justify-between gap-2 text-white"
         >
           <div className="flex items-center gap-1.5 min-w-0">
             <PlusCircle className="w-4 h-4 text-amber-300 shrink-0" />
@@ -171,8 +171,8 @@ export const StepDish: React.FC<StepDishProps> = ({
         </div>
       )}
 
-      {/* Dishes List (All Authentic Live Menu Items) */}
-      <div className="flex flex-col gap-1.5 max-h-[145px] sm:max-h-[175px] overflow-y-auto pr-0.5">
+      {/* Dishes List (All Authentic Live Menu Items) - Scrollable Middle Area */}
+      <div className="flex-1 min-h-0 overflow-y-auto pr-0.5 flex flex-col gap-1.5 relative z-10">
         {isLoading && dishes.length === 0 ? (
           <div className="flex flex-col gap-1.5">
             {[1, 2, 3].map(i => (
@@ -244,8 +244,8 @@ export const StepDish: React.FC<StepDishProps> = ({
         )}
       </div>
 
-      {/* Spice Level Selector - Compact Pill Row */}
-      <div className="flex flex-col gap-1 pt-0.5 relative z-10">
+      {/* Spice Level Selector - Compact Row */}
+      <div className="shrink-0 flex flex-col gap-1 pt-0.5 relative z-10">
         <div className="flex items-center justify-between text-[10px]">
           <span className="font-extrabold text-[#ff8566] uppercase tracking-wider flex items-center gap-1">
             <span>SPICE LEVEL:</span>
@@ -279,15 +279,15 @@ export const StepDish: React.FC<StepDishProps> = ({
         </div>
       </div>
 
-      {/* Navigation Footer */}
-      <div className="pt-0.5 relative z-10">
+      {/* Navigation Footer - Anchored at the bottom */}
+      <div className="shrink-0 pt-0.5 relative z-10">
         <button
           onClick={() => onFeedBakasur(activeDishName)}
           disabled={!activeDishName.trim()}
           type="button"
           className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide border border-white/20"
         >
-          <span>Feed Bakasur: {activeDishName ? `"${activeDishName.slice(0, 22)}${activeDishName.length > 22 ? '...' : ''}"` : 'Pick a Dish'} 🍛</span>
+          <span>Feed Bakasur: {activeDishName ? `"${activeDishName.slice(0, 20)}${activeDishName.length > 20 ? '...' : ''}"` : 'Pick a Dish'} 🍛</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
