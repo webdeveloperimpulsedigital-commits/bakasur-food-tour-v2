@@ -287,7 +287,7 @@ export const StepCity: React.FC<StepCityProps> = ({
 
       {/* Recommended Nearby Food Joints List */}
       <div className="flex flex-col gap-1 min-h-0 relative z-10">
-        <div className="flex flex-col gap-1.5 max-h-[220px] sm:max-h-[265px] overflow-y-auto pr-0.5">
+        <div className="flex flex-col gap-1.5 max-h-[175px] sm:max-h-[250px] overflow-y-auto pr-0.5">
           {isLoadingSpots && nearbyRestaurants.length === 0 ? (
             <div className="flex flex-col gap-1.5">
               {[1, 2, 3].map(i => (

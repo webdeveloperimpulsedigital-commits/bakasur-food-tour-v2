@@ -238,7 +238,7 @@ export default function CampaignPage() {
   return (
     <div className="h-[100dvh] min-h-[100dvh] max-h-[100dvh] w-full flex flex-col lg:flex-row overflow-hidden bg-black">
       {/* Top Section on Mobile / Left Section on Desktop: Full Prominent Bakasur Video Player */}
-      <div className="w-full lg:w-1/2 h-[52vh] min-h-[280px] sm:h-[54vh] lg:h-full lg:max-h-none relative overflow-hidden bg-black flex items-center justify-center shrink-0">
+      <div className="w-full lg:w-1/2 h-[40vh] sm:h-[45vh] lg:h-full relative overflow-hidden bg-black flex items-center justify-center shrink-0">
         <BakasurVideoPlayer
           videoUrl={videoUrl}
           stageName={currentStep}
@@ -259,9 +259,9 @@ export default function CampaignPage() {
       </div>
 
       {/* Bottom Section on Mobile / Right Section on Desktop: Sleek Rounded Top Blue Panel */}
-      <div className="w-full lg:w-1/2 flex-1 lg:h-full relative bg-gradient-to-br from-[#023093] via-[#02287e] to-[#011a54] text-white flex flex-col justify-between overflow-y-auto p-4 sm:p-5 md:p-7 lg:p-10 -mt-6 sm:-mt-8 lg:mt-0 rounded-t-[2rem] sm:rounded-t-[2.5rem] lg:rounded-none border-t border-white/25 lg:border-t-0 lg:border-l-2 lg:border-blue-400/25 backdrop-blur-xl shadow-[0_-12px_35px_rgba(0,0,0,0.5)] z-20">
+      <div className="w-full lg:w-1/2 flex-1 lg:h-full relative bg-gradient-to-br from-[#023093] via-[#02287e] to-[#011a54] text-white flex flex-col justify-between overflow-y-auto p-3 sm:p-5 md:p-7 lg:p-10 rounded-t-[1.75rem] sm:rounded-t-[2.5rem] lg:rounded-none border-t-2 border-blue-400/30 lg:border-t-0 lg:border-l-2 lg:border-blue-400/25 backdrop-blur-xl shadow-[0_-10px_30px_rgba(0,0,0,0.6)] z-20">
         {/* Mobile Pull Bar Indicator */}
-        <div className="w-10 h-1 rounded-full bg-white/30 mx-auto mb-2 lg:hidden shrink-0" />
+        <div className="w-10 h-1 rounded-full bg-white/30 mx-auto mb-1.5 lg:hidden shrink-0" />
 
         {/* Decorative Background Glows */}
         <div className="absolute top-0 right-0 w-72 h-72 bg-blue-400/10 rounded-full blur-3xl pointer-events-none" />
