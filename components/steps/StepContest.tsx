@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import { Share2, RotateCcw, Check, Sparkles, Trophy, ShieldCheck, ArrowRight, User, Phone, Mail, CheckCircle2, Ticket } from 'lucide-react';
-import confetti from 'canvas-confetti';
 import { Restaurant, Dish } from '@/lib/db';
 import { SpiceOption } from './StepDish';
 
@@ -36,14 +35,6 @@ export const StepContest: React.FC<StepContestProps> = ({
   // Handle WhatsApp Share / Native Share
   const handleSharePass = async () => {
     const shareText = `🍽️ I just added my food recommendation (${dish.name} at ${restaurant.name}, ${restaurant.city}) to Bakasur's Food Tour! Check out the Gastrium Food Tour Map: ${typeof window !== 'undefined' ? window.location.origin : ''}`;
-
-    // Trigger celebration confetti
-    confetti({
-      particleCount: 100,
-      spread: 70,
-      origin: { y: 0.6 },
-      colors: ['#023093', '#00acc1', '#ff9800', '#00c853']
-    });
 
     if (navigator.share) {
       try {
@@ -101,13 +92,6 @@ export const StepContest: React.FC<StepContestProps> = ({
         setParticipationId(json.data.participation_id);
         setIsRegistered(true);
         setShowOfflineTourModal(false);
-
-        confetti({
-          particleCount: 120,
-          spread: 80,
-          origin: { y: 0.5 },
-          colors: ['#023093', '#00acc1', '#ff9800', '#ffd700']
-        });
       } else {
         setError(json.error || 'Failed to submit offline tour registration');
       }
@@ -122,16 +106,19 @@ export const StepContest: React.FC<StepContestProps> = ({
     <div className="w-full flex flex-col gap-2 sm:gap-3 text-white animate-in fade-in duration-300">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
+        <div className="min-w-0 flex-1">
           <span className="text-[10px] font-black text-cyan-300 uppercase tracking-wider flex items-center gap-1">
             <Check className="w-3 h-3 text-emerald-400" />
             <span>SUBMISSION CONFIRMED</span>
           </span>
-          <h2 className="text-base sm:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
-            Bakasur Official Food Pass
+          <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight">
+            Bakasur Certified Foodie Pass 🎫
           </h2>
+          <p className="text-[10px] sm:text-[11px] text-blue-200 font-medium leading-snug">
+            Spicy khana bhi khilaya aur Gastrium se Bakasur ko bachaya!
+          </p>
         </div>
-        <span className="text-[10px] font-mono font-bold text-yellow-300 bg-yellow-400/20 px-2 py-0.5 rounded-full border border-yellow-400/30 shrink-0">
+        <span className="text-[10px] font-mono font-bold text-white bg-[#D23002]/60 px-2 py-0.5 rounded-full border border-[#D23002] shrink-0">
           {participationId || 'LIVE PASS'}
         </span>
       </div>
@@ -210,7 +197,7 @@ export const StepContest: React.FC<StepContestProps> = ({
         <button
           onClick={onExploreMap}
           type="button"
-          className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide"
+          className="w-full py-2.5 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide border border-white/20"
         >
           <span>Explore Live Food Tour Map</span>
           <span className="text-base">🗺️</span>

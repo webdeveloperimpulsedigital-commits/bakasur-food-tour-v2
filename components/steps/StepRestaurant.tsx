@@ -9,7 +9,7 @@ interface StepRestaurantProps {
   selectedRestaurant: Restaurant | null;
   onSelectRestaurant: (restaurant: Restaurant) => void;
   onNext: () => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export const StepRestaurant: React.FC<StepRestaurantProps> = ({
@@ -58,9 +58,6 @@ export const StepRestaurant: React.FC<StepRestaurantProps> = ({
     <div className="w-full rounded-2xl sm:rounded-3xl bg-white p-5 sm:p-7 shadow-2xl border border-slate-100 flex flex-col gap-4 sm:gap-5 text-slate-900">
       {/* Top Label */}
       <div className="text-left">
-        <span className="text-[11px] font-bold text-blue-600 uppercase tracking-wider block mb-1">
-          STEP 2 OF 4 • JOINT IN {userLocation.city.toUpperCase()}
-        </span>
         <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900 brand-font">
           {userLocation.city} Mein Kaunsa Joint?
         </h2>
@@ -149,20 +146,12 @@ export const StepRestaurant: React.FC<StepRestaurantProps> = ({
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex items-center gap-3 pt-2">
-        <button
-          onClick={onBack}
-          type="button"
-          className="px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs sm:text-sm transition-all cursor-pointer"
-        >
-          Back
-        </button>
-
+      <div className="pt-2">
         <button
           onClick={onNext}
           disabled={!selectedRestaurant}
           type="button"
-          className="flex-1 py-3 px-5 rounded-xl bg-[#023093] hover:bg-[#033bb8] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-blue-900/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50"
+          className="w-full py-3 px-5 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-extrabold text-xs sm:text-sm shadow-md shadow-[#D23002]/30 hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50"
         >
           <span>Next: Pick Food to Feed</span>
           <ArrowRight className="w-4 h-4" />

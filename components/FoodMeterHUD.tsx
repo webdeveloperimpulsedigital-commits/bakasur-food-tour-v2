@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { Flame, Utensils, Zap, ShieldAlert, Sparkles } from 'lucide-react';
-import confetti from 'canvas-confetti';
 
 interface FoodMeterHUDProps {
   percentage: number;
@@ -52,19 +51,6 @@ export const FoodMeterHUD: React.FC<FoodMeterHUDProps> = ({
 
   const handleActionClick = () => {
     if (isLoading) return;
-
-    // Trigger colorful celebration confetti particles
-    try {
-      confetti({
-        particleCount: 60,
-        spread: 70,
-        origin: { y: 0.7 },
-        colors: ['#FF5500', '#FFB800', '#FF3B30', '#00ACC1', '#00C853']
-      });
-    } catch {
-      // Confetti fallback in non-browser envs
-    }
-
     onAurKhiloClick();
   };
 

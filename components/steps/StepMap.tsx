@@ -73,7 +73,7 @@ export const StepMap: React.FC<StepMapProps> = ({
             <Sparkles className="w-3 h-3 text-yellow-400" />
             <span>Collective Outcome</span>
           </div>
-          <h2 className="text-lg sm:text-2xl font-black text-white brand-font leading-tight">Global Campaign Map</h2>
+          <h2 className="text-lg sm:text-2xl font-black text-white brand-font leading-tight">Bakasur&apos;s All-India Spice Trail 🗺️</h2>
         </div>
 
         <div className="flex items-center gap-1 px-2.5 py-0.5 sm:px-3 sm:py-1 rounded-full bg-blue-600/20 border border-blue-400/40 text-[10px] sm:text-xs text-cyan-300 font-extrabold">
@@ -83,7 +83,7 @@ export const StepMap: React.FC<StepMapProps> = ({
       </div>
 
       <p className="text-[11px] sm:text-xs text-blue-200/80">
-        Every foodie who takes the tour adds to the live Bakasur Food Map across India! Click on any spot to view details.
+        Dekho desh bhar ke foodies ne Bakasur ko kaunse dangerous spicy joints par bheja! Click any spot to explore.
       </p>
 
       {/* City Filter Pills */}
@@ -97,7 +97,7 @@ export const StepMap: React.FC<StepMapProps> = ({
               if (match) setActivePoint(match);
             }}
             className={`px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold shrink-0 transition-all cursor-pointer ${selectedCityFilter === city
-                ? 'bg-yellow-400 text-slate-950 font-black shadow-sm'
+                ? 'bg-[#D23002] text-white font-black shadow-md'
                 : 'bg-white/10 border border-white/20 text-white hover:bg-white/20'
               }`}
           >
@@ -129,21 +129,21 @@ export const StepMap: React.FC<StepMapProps> = ({
                 key={point.id}
                 onClick={() => setActivePoint(point)}
                 className={`p-2 sm:p-2.5 rounded-xl sm:rounded-2xl border text-left transition-all cursor-pointer shadow-sm ${isSelected
-                    ? 'bg-yellow-400 border-yellow-300 text-slate-950 shadow-md scale-[1.02] font-black'
-                    : 'bg-white/90 border-slate-200 hover:border-yellow-400 text-slate-800'
+                    ? 'bg-[#D23002] border-white/40 text-white shadow-md scale-[1.02] font-black'
+                    : 'bg-white/90 border-slate-200 hover:border-[#D23002] text-slate-800'
                   }`}
               >
                 <div className="flex items-center gap-1 mb-0.5">
                   <span className="text-[11px]">📍</span>
-                  <span className={`font-extrabold text-[11px] sm:text-xs truncate brand-font ${isSelected ? 'text-slate-950' : 'text-slate-900'}`}>
+                  <span className={`font-extrabold text-[11px] sm:text-xs truncate brand-font ${isSelected ? 'text-white' : 'text-slate-900'}`}>
                     {point.name}
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-[9px] sm:text-[10px]">
-                  <span className={isSelected ? 'text-slate-900 font-bold' : 'text-[#023093] font-bold'}>
+                  <span className={isSelected ? 'text-rose-100 font-bold' : 'text-[#023093] font-bold'}>
                     {point.city}
                   </span>
-                  <span className={isSelected ? 'text-slate-900 font-bold' : 'text-slate-500 font-mono'}>
+                  <span className={isSelected ? 'text-white font-bold' : 'text-slate-500 font-mono'}>
                     {point.total_visits} visits
                   </span>
                 </div>
@@ -160,13 +160,13 @@ export const StepMap: React.FC<StepMapProps> = ({
               <div className="min-w-0">
                 <h4 className="font-extrabold text-xs sm:text-sm text-white truncate brand-font">{activePoint.name}</h4>
                 <p className="text-[10px] sm:text-[11px] text-blue-200/90 truncate">
-                  Dish: <span className="font-semibold text-yellow-300">{activePoint.featured_dish}</span>
+                  Dish: <span className="font-semibold text-[#ff8566]">{activePoint.featured_dish}</span>
                 </p>
               </div>
             </div>
 
             <div className="text-right shrink-0">
-              <span className="text-xs font-black text-yellow-400 block">{activePoint.total_visits}</span>
+              <span className="text-xs font-black text-[#ff8566] block">{activePoint.total_visits}</span>
               <span className="text-[8px] sm:text-[9px] text-blue-200/70 uppercase">Visits</span>
             </div>
           </div>
@@ -187,7 +187,7 @@ export const StepMap: React.FC<StepMapProps> = ({
         {onRestartTour && (
           <button
             onClick={onRestartTour}
-            className="py-2.5 sm:py-3 px-4 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 transition-all flex items-center justify-center gap-1.5 cursor-pointer brand-font"
+            className="py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-1.5 cursor-pointer brand-font border border-white/20"
           >
             <span>🍽️ Recommend Another Spot</span>
           </button>

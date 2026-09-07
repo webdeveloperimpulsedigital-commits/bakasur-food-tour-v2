@@ -13,9 +13,9 @@ export interface SpiceOption {
 }
 
 export const SPICE_LEVELS: SpiceOption[] = [
-  { id: 'mild', name: 'Mild & Makkhan', level: '1/5', icon: '🧈', description: 'Smooth butter & gentle aroma' },
-  { id: 'masaledaar', name: 'Masaledaar', level: '3/5', icon: '🌶️', description: 'Rich Indian spices & robust heat' },
-  { id: 'fire', name: 'Bakasur Fire', level: '5/5', icon: '🔥', description: 'Extreme spicy chili blast' }
+  { id: 'mild', name: 'Mild & Makkhan', level: '1/5', icon: '🧈', description: 'Bachha Level - Bakasur will laugh at you!' },
+  { id: 'masaledaar', name: 'Masaledaar', level: '3/5', icon: '🌶️', description: 'Asli Street Spice - Thoda thoda pasina aayega' },
+  { id: 'fire', name: 'Bakasur Fire', level: '5/5', icon: '🔥', description: 'Direct Volcano - Seene mein aag guarantee!' }
 ];
 
 interface StepDishProps {
@@ -25,7 +25,7 @@ interface StepDishProps {
   onSelectDish: (dish: Dish | { name: string; id?: number; price?: number }) => void;
   onSelectSpice: (spice: SpiceOption) => void;
   onFeedBakasur: (customDishName?: string) => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export const StepDish: React.FC<StepDishProps> = ({
@@ -98,15 +98,15 @@ export const StepDish: React.FC<StepDishProps> = ({
     <div className="w-full flex flex-col gap-2 sm:gap-2.5 text-white">
       {/* Top Header */}
       <div className="flex items-center justify-between gap-2">
-        <div className="min-w-0">
-          <span className="text-[10px] font-black text-yellow-300 uppercase tracking-wider block">
-            STEP 2 • PICK DISH
-          </span>
-          <h2 className="text-base sm:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
-            {restaurant.name} Special Dish:
+        <div className="min-w-0 flex-1">
+          <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight">
+            {restaurant.name} Special Thali:
           </h2>
+          <p className="text-[10px] sm:text-[11px] text-blue-200 font-medium leading-snug">
+            Bakasur ko kaunsi famous dish taste karwani hai?
+          </p>
         </div>
-        <span className="text-[10px] font-bold text-yellow-300 bg-yellow-400/20 px-2 py-0.5 rounded-full border border-yellow-400/40 shrink-0">
+        <span className="text-[10px] font-bold text-white bg-[#D23002]/60 px-2 py-0.5 rounded-full border border-[#D23002] shrink-0">
           📍 {restaurant.area || restaurant.city}
         </span>
       </div>
@@ -128,8 +128,8 @@ export const StepDish: React.FC<StepDishProps> = ({
                 onClick={() => handleSelectDish(dish)}
                 className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 text-slate-900 ${
                   isSelected
-                    ? 'border-2 border-yellow-400 bg-yellow-50/95 shadow-md scale-[1.01]'
-                    : 'border-white/20 hover:border-yellow-400/50 hover:bg-slate-50 bg-white shadow-sm'
+                    ? 'border-2 border-[#D23002] bg-orange-50/95 shadow-md scale-[1.01]'
+                    : 'border-white/20 hover:border-[#D23002]/50 hover:bg-slate-50 bg-white shadow-sm'
                 }`}
               >
                 {/* Left info */}
@@ -142,13 +142,10 @@ export const StepDish: React.FC<StepDishProps> = ({
                     )}
                   </div>
                   <div className="min-w-0">
-                    <div className="flex items-center gap-1.5 flex-wrap">
-                      <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#023093]' : 'text-slate-900'}`}>
+                    <div className="flex items-center gap-1.5">
+                      <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#D23002]' : 'text-slate-900'}`}>
                         {dish.name}
                       </h4>
-                      <span className="text-[9px] sm:text-[10px] font-bold text-slate-800 bg-slate-100 px-1 py-0.2 rounded">
-                        ₹{dish.price}
-                      </span>
                     </div>
                     <p className="text-[9px] sm:text-[10px] text-slate-500 truncate mt-0.5">
                       {dish.description || `Specialty at ${restaurant.name}.`}
@@ -165,7 +162,7 @@ export const StepDish: React.FC<StepDishProps> = ({
                   }}
                   className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer ${
                     isSelected
-                      ? 'bg-yellow-400 text-slate-950 shadow-sm'
+                      ? 'bg-[#D23002] text-white shadow-sm'
                       : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                   }`}
                 >
@@ -180,11 +177,11 @@ export const StepDish: React.FC<StepDishProps> = ({
       {/* Spice Level Selector - Compact Pill Row */}
       <div className="flex flex-col gap-1 pt-0.5 relative z-10">
         <div className="flex items-center justify-between text-[10px]">
-          <span className="font-extrabold text-yellow-300 uppercase tracking-wider flex items-center gap-1">
+          <span className="font-extrabold text-[#ff8566] uppercase tracking-wider flex items-center gap-1">
             <span>SPICE LEVEL:</span>
             <span>🌶️</span>
           </span>
-          <span className="font-bold text-yellow-400">
+          <span className="font-bold text-[#ffb09c]">
             {selectedSpice.name} ({selectedSpice.level})
           </span>
         </div>
@@ -200,8 +197,8 @@ export const StepDish: React.FC<StepDishProps> = ({
                 type="button"
                 className={`py-1.5 px-2 rounded-xl text-center border transition-all cursor-pointer flex items-center justify-center gap-1.5 ${
                   isSelected
-                    ? 'border-2 border-yellow-400 bg-yellow-400 text-slate-950 font-black shadow-md scale-[1.02]'
-                    : 'border-white/20 hover:border-yellow-400/50 bg-white/10 text-white'
+                    ? 'border-2 border-[#D23002] bg-[#D23002] text-white font-black shadow-md scale-[1.02]'
+                    : 'border-white/20 hover:border-[#D23002]/50 bg-white/10 text-white'
                 }`}
               >
                 <span className="text-sm">{sp.icon}</span>
@@ -213,20 +210,12 @@ export const StepDish: React.FC<StepDishProps> = ({
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex items-center gap-2 pt-0.5 relative z-10">
-        <button
-          onClick={onBack}
-          type="button"
-          className="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs border border-white/20 transition-all cursor-pointer shrink-0"
-        >
-          Back
-        </button>
-
+      <div className="pt-0.5 relative z-10">
         <button
           onClick={() => onFeedBakasur(activeDishName)}
           disabled={!activeDishName.trim()}
           type="button"
-          className="flex-1 py-2.5 px-4 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide"
+          className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide border border-white/20"
         >
           <span>Feed Bakasur Now! 🍛</span>
           <ArrowRight className="w-4 h-4" />

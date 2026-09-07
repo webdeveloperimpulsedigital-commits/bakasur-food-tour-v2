@@ -106,10 +106,10 @@ export const StepRelief: React.FC<StepReliefProps> = ({
         {/* Status Text Under Ring */}
         <div className="flex flex-col items-center gap-0.5 sm:gap-1">
           <h3 className="font-extrabold text-xs sm:text-base text-white brand-font">
-            Neutralizing Acid Burn...
+            Extinguishing the Spice Volcano...
           </h3>
           <p className="text-[11px] sm:text-xs text-blue-100 font-medium max-w-xs truncate">
-            Cooling Bakasur&apos;s stomach in 6 seconds!
+            Gastrium neutralizing acid burn in 6 seconds!
           </p>
         </div>
       </div>
@@ -126,10 +126,10 @@ export const StepRelief: React.FC<StepReliefProps> = ({
           <span>100% RELIEVED IN 6 SECONDS</span>
         </span>
         <h2 className="text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-white brand-font leading-tight">
-          Ahhh! Pet Mein Thandak Aur Chain!
+          Ahhhh! Bakasur Ko Aagaya Chain! 🥰
         </h2>
-        <p className="text-[11px] sm:text-xs text-blue-100 mt-0.5 truncate">
-          Gastrium neutralized the acid burn in 6 seconds!
+        <p className="text-[11px] sm:text-xs text-blue-100 mt-0.5 leading-snug">
+          Gastrium neutralized the spice volcano in just 6 seconds!
         </p>
       </div>
 
@@ -161,9 +161,9 @@ export const StepRelief: React.FC<StepReliefProps> = ({
         <button
           onClick={onGetOfficialPass}
           type="button"
-          className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide"
+          className="w-full py-3 sm:py-3.5 px-5 sm:px-6 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 hover:shadow-2xl hover:scale-[1.01] active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer brand-font tracking-wide border border-white/20"
         >
-          <span>Get Official Food Pass</span>
+          <span>Claim Certified Foodie Pass 🎟️</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
