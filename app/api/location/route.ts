@@ -40,47 +40,99 @@ async function reverseGeocodeCoords(lat: number, lng: number): Promise<{ subloca
   }
 }
 
+const CITY_ALIASES: Record<string, string> = {
+  'pune': 'Pune',
+  'poona': 'Pune',
+  'pcmc': 'Pune',
+  'pimpri': 'Pune',
+  'chinchwad': 'Pune',
+  'mumbai': 'Mumbai',
+  'bombay': 'Mumbai',
+  'navi mumbai': 'Mumbai',
+  'thane': 'Mumbai',
+  'kalyan': 'Mumbai',
+  'delhi': 'Delhi',
+  'new delhi': 'Delhi',
+  'ncr': 'Delhi',
+  'noida': 'Delhi',
+  'gurugram': 'Delhi',
+  'gurgaon': 'Delhi',
+  'ghaziabad': 'Delhi',
+  'faridabad': 'Delhi',
+  'bengaluru': 'Bengaluru',
+  'bangalore': 'Bengaluru',
+  'hyderabad': 'Hyderabad',
+  'secunderabad': 'Hyderabad',
+  'kolkata': 'Kolkata',
+  'calcutta': 'Kolkata',
+  'howrah': 'Kolkata',
+  'lucknow': 'Lucknow'
+};
+
+function matchCityByName(name?: string) {
+  if (!name) return null;
+  const clean = name.toLowerCase().trim();
+  for (const [alias, canonical] of Object.entries(CITY_ALIASES)) {
+    if (clean === alias || clean.includes(alias) || alias.includes(clean)) {
+      return POPULAR_CITIES.find(c => c.name.toLowerCase() === canonical.toLowerCase()) || null;
+    }
+  }
+  return null;
+}
+
 export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
-  let userLat = parseFloat(searchParams.get('lat') || searchParams.get('latitude') || '');
-  let userLng = parseFloat(searchParams.get('lng') || searchParams.get('longitude') || '');
+  const userLat = parseFloat(searchParams.get('lat') || searchParams.get('latitude') || '');
+  const userLng = parseFloat(searchParams.get('lng') || searchParams.get('longitude') || '');
   const requestedCity = searchParams.get('city') || '';
 
-  let detectedCity = POPULAR_CITIES[0]; // Default to Pune
-  let hasGPS = !isNaN(userLat) && !isNaN(userLng);
+  const hasGPS = !isNaN(userLat) && !isNaN(userLng);
   let preciseSublocality: string | null = null;
+  let detectedCity: typeof POPULAR_CITIES[0] | null = null;
 
-  // If live GPS coordinates are provided, perform reverse geocode
+  // 1. If live GPS coordinates are provided, reverse-geocode
   if (hasGPS) {
     const geoInfo = await reverseGeocodeCoords(userLat, userLng);
     if (geoInfo?.sublocality) {
       preciseSublocality = geoInfo.sublocality;
     }
     if (geoInfo?.city) {
-      const match = POPULAR_CITIES.find(c => c.name.toLowerCase() === geoInfo.city?.toLowerCase());
-      if (match) detectedCity = match;
+      detectedCity = matchCityByName(geoInfo.city) || matchCityByName(geoInfo.state);
     }
-  }
+    if (!detectedCity && preciseSublocality) {
+      detectedCity = matchCityByName(preciseSublocality);
+    }
 
-  if (requestedCity) {
-    const match = POPULAR_CITIES.find(c => c.name.toLowerCase() === requestedCity.toLowerCase());
-    if (match) detectedCity = match;
-  } else if (hasGPS && !detectedCity) {
-    let minDistance = Infinity;
-    for (const city of POPULAR_CITIES) {
-      const dist = calculateDistanceKm(userLat, userLng, city.latitude, city.longitude);
-      if (dist < minDistance) {
-        minDistance = dist;
-        detectedCity = city;
+    // If reverse geocode city wasn't found in alias map or timed out, find closest city by GPS distance
+    if (!detectedCity) {
+      let minDistance = Infinity;
+      for (const city of POPULAR_CITIES) {
+        const dist = calculateDistanceKm(userLat, userLng, city.latitude, city.longitude);
+        if (dist < minDistance) {
+          minDistance = dist;
+          detectedCity = city;
+        }
       }
     }
   }
 
-  // Calculate Pune area extraction
-  let areasForCity = PUNE_AREAS;
-  let detectedArea: AreaInfo = PUNE_AREAS[0];
+  // 2. If user specifically requested a city, override detection
+  if (requestedCity) {
+    const match = matchCityByName(requestedCity) || POPULAR_CITIES.find(c => c.name.toLowerCase() === requestedCity.toLowerCase());
+    if (match) detectedCity = match;
+  }
+
+  // 3. Fallback to default Pune if still unresolved
+  if (!detectedCity) {
+    detectedCity = POPULAR_CITIES[0];
+  }
+
+  // 4. Calculate Area / Locality Info
+  let areasForCity: AreaInfo[] = [];
+  let detectedArea: AreaInfo | null = null;
 
   if (detectedCity.name.toLowerCase() === 'pune') {
+    areasForCity = PUNE_AREAS;
     if (hasGPS) {
       let minAreaDist = Infinity;
       const calculatedAreas = PUNE_AREAS.map(area => {
@@ -92,7 +144,7 @@ export async function GET(request: Request) {
         return { ...area, distanceKm: dist };
       });
 
-      // If Nominatim resolved an exact Pune sublocality (e.g. "Narayan Peth", "Shukrawar Peth")
+      // If Nominatim resolved an exact Pune sublocality (e.g. "Narayan Peth", "Kothrud", "Deccan")
       if (preciseSublocality) {
         const matchingArea = PUNE_AREAS.find(a => 
           preciseSublocality!.toLowerCase().includes(a.name.toLowerCase()) || 
@@ -112,11 +164,25 @@ export async function GET(request: Request) {
     } else {
       detectedArea = PUNE_AREAS[0];
     }
+  } else {
+    // For non-Pune cities (Mumbai, Delhi, Bangalore, etc.)
+    detectedArea = {
+      id: `${detectedCity.name.toLowerCase()}_center`,
+      name: preciseSublocality || `${detectedCity.name} Center`,
+      displayName: preciseSublocality ? `${preciseSublocality}, ${detectedCity.name}` : `${detectedCity.name}`,
+      city: detectedCity.name,
+      latitude: hasGPS ? userLat : detectedCity.latitude,
+      longitude: hasGPS ? userLng : detectedCity.longitude,
+      popularSpotsCount: detectedCity.popularSpots || 20,
+      popularLandmarks: [`${detectedCity.name} Central`, "Famous Food Street"],
+      description: detectedCity.description || `Iconic food hub of ${detectedCity.name}`,
+      distanceKm: hasGPS ? calculateDistanceKm(userLat, userLng, detectedCity.latitude, detectedCity.longitude) : 0
+    };
   }
 
   const locationDisplay = detectedCity.name.toLowerCase() === 'pune'
-    ? `${preciseSublocality ? preciseSublocality + ', ' : ''}${detectedArea.displayName}`
-    : `${detectedCity.name}, India`;
+    ? `${preciseSublocality ? preciseSublocality + ', ' : ''}${detectedArea?.displayName || 'Pune'}`
+    : `${preciseSublocality ? preciseSublocality + ', ' : ''}${detectedCity.name}, India`;
 
   return NextResponse.json({
     success: true,
