@@ -39,7 +39,7 @@ interface StepCityProps {
   onSelectArea?: (area: string) => void;
   onSelectRestaurant: (restaurant: Restaurant) => void;
   onNext: () => void;
-  onBack: () => void;
+  onBack?: () => void;
 }
 
 export const StepCity: React.FC<StepCityProps> = ({
@@ -188,164 +188,69 @@ export const StepCity: React.FC<StepCityProps> = ({
   }, [availableAreas, areaSearchQuery]);
 
   return (
-    <div className="w-full flex flex-col gap-4 text-white">
-      {/* Top Section Header */}
-      <div className="text-left">
-        <div className="flex items-center justify-between gap-2 mb-1">
-          <span className="text-[11px] font-black text-yellow-300 uppercase tracking-wider block">
-            STEP 1 OF 4 • GPS LOCATION &amp; HOTELS
+    <div className="w-full flex flex-col gap-2 sm:gap-2.5 text-white">
+      {/* Top Section Header with Compact Area Pill */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="min-w-0 flex-1">
+          <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight">
+            Kahan Khilaoge Bakasur Ko?
+          </h2>
+          <p className="text-[10px] sm:text-[11px] text-blue-200 font-medium leading-snug">
+            Apne area ka sabse famous &amp; legendary food adda chuno!
+          </p>
+        </div>
+
+        {/* Quick Area Switcher Pill */}
+        <button
+          onClick={() => setShowLocationPickerModal(true)}
+          type="button"
+          className="flex items-center gap-1 px-2 py-1.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-[10px] sm:text-xs font-extrabold shrink-0 transition-all shadow-sm"
+        >
+          <span className="text-yellow-400">📍</span>
+          <span className="max-w-[80px] sm:max-w-[120px] truncate font-mono">
+            {currentArea !== 'All Areas' ? currentArea : selectedCity}
           </span>
-          <button
-            onClick={detectUserLocation}
-            disabled={isDetectingLocation}
-            type="button"
-            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-white/15 hover:bg-white/25 text-white text-[11px] font-extrabold border border-white/20 transition-all cursor-pointer"
-          >
-            <RotateCw className={`w-3 h-3 ${isDetectingLocation ? 'animate-spin text-yellow-300' : ''}`} />
-            <span>Re-detect GPS</span>
-          </button>
-        </div>
-
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-white brand-font">
-          Kahan Khilaoge Bakasur Ko?
-        </h2>
-        <p className="text-xs sm:text-sm text-blue-100 mt-0.5">
-          Live GPS auto-detected iconic food joints in your locality:
-        </p>
+          <ChevronDown className="w-3 h-3 text-blue-200 shrink-0" />
+        </button>
       </div>
-
-      {/* Zomato-Style Location Bar */}
-      <div
-        onClick={() => setShowLocationPickerModal(true)}
-        className="flex items-center justify-between p-3 px-3.5 rounded-2xl bg-white/10 hover:bg-white/15 border border-white/20 hover:border-yellow-400/60 transition-all cursor-pointer shadow-sm group relative z-10"
-      >
-        <div className="flex items-center gap-2.5 min-w-0">
-          <div className="w-8 h-8 rounded-xl bg-yellow-400 text-slate-950 flex items-center justify-center shrink-0 shadow-md">
-            <MapPin className="w-4 h-4 text-slate-950 animate-bounce" />
-          </div>
-          <div className="min-w-0">
-            <div className="flex items-center gap-1.5">
-              <span className="font-black text-xs sm:text-sm text-white truncate brand-font group-hover:text-yellow-300 transition-colors">
-                {detectedLocalityLabel}
-              </span>
-              <ChevronDown className="w-3.5 h-3.5 text-blue-200 group-hover:text-yellow-300 shrink-0 transition-transform group-hover:translate-y-0.5" />
-            </div>
-            <div className="flex items-center gap-1 text-[10px] text-blue-200 font-semibold truncate">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping shrink-0" />
-              <span className="truncate">{locationStatus}</span>
-            </div>
-          </div>
-        </div>
-
-        <span className="text-[11px] font-extrabold text-slate-950 bg-yellow-400 hover:bg-yellow-300 px-2.5 py-1 rounded-lg border border-yellow-300 shadow-sm shrink-0 whitespace-nowrap">
-          Change Area ▾
-        </span>
-      </div>
-
-      {/* Zomato-Style Area Quick Filter Chips */}
-      {selectedCity.toLowerCase() === 'pune' && (
-        <div className="flex flex-col gap-1.5 relative z-10">
-          <div className="flex items-center justify-between text-[11px]">
-            <span className="font-bold text-yellow-300 uppercase tracking-wider flex items-center gap-1">
-              <Compass className="w-3.5 h-3.5 text-yellow-400" />
-              <span>Select Locality / Area in Pune:</span>
-            </span>
-            <span className="text-[10px] text-blue-200 font-mono">
-              {availableAreas.length} Localities
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5 overflow-x-auto pb-1 no-scrollbar text-xs">
-            {/* All Areas Chip */}
-            <button
-              onClick={() => handleAreaSelect('All Areas')}
-              type="button"
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer border text-[11px] ${
-                currentArea === 'All Areas'
-                  ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-md shadow-yellow-500/20 font-black'
-                  : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
-              }`}
-            >
-              ✨ All Pune
-            </button>
-
-            {/* Popular Area Chips */}
-            {availableAreas.map((area) => {
-              const isSelected = currentArea.toLowerCase() === area.name.toLowerCase();
-              return (
-                <button
-                  key={area.id}
-                  onClick={() => handleAreaSelect(area.name)}
-                  type="button"
-                  className={`px-3 py-1.5 rounded-xl font-bold transition-all shrink-0 cursor-pointer border text-[11px] flex items-center gap-1 ${
-                    isSelected
-                      ? 'bg-yellow-400 text-slate-950 border-yellow-300 shadow-md shadow-yellow-500/20 font-black scale-[1.02]'
-                      : 'bg-white/10 text-white border-white/15 hover:bg-white/20'
-                  }`}
-                >
-                  <span>📍 {area.name}</span>
-                  {area.distanceKm !== undefined && (
-                    <span className={`text-[9px] font-mono px-1 rounded ${isSelected ? 'bg-amber-600/30 text-slate-950 font-bold' : 'bg-white/20 text-blue-100'}`}>
-                      {area.distanceKm}km
-                    </span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-        </div>
-      )}
 
       {/* Unified Search Bar */}
       <div className="relative z-10">
-        <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+        <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
         <input
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`🔍 Search restaurant, dish, or area (e.g. Vaishali, Misal, FC Road)...`}
-          className="w-full pl-10 pr-8 py-2.5 sm:py-3 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs sm:text-sm placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-yellow-400 transition-all shadow-md"
+          placeholder={`🔍 Sheher ka sabse famous adda dhoondo (e.g. Vaishali, Katakirr, Irani Cafe)...`}
+          className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
         />
         {searchQuery && (
           <button
             onClick={() => setSearchQuery('')}
-            className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1.5 py-0.5"
+            className="absolute right-2.5 top-1/2 -translate-y-1/2 text-xs text-slate-400 hover:text-slate-600 px-1 py-0.5"
           >
             ✕
           </button>
         )}
       </div>
 
-      {/* Recommended Nearby Hotels / Food Joints List */}
-      <div className="flex flex-col gap-1.5 min-h-0 relative z-10">
-        <div className="flex items-center justify-between text-xs">
-          <span className="font-extrabold text-white uppercase tracking-wider flex items-center gap-1.5">
-            <Sparkles className="w-3.5 h-3.5 text-yellow-400" />
-            <span>
-              {currentArea !== 'All Areas' ? `${currentArea} Spots` : `Recommended in ${selectedCity}`}
-            </span>
-          </span>
-          <span className="text-[11px] text-yellow-300 font-semibold font-mono">
-            {nearbyRestaurants.length} Joints
-          </span>
-        </div>
-
-        <div className="flex flex-col gap-2 max-h-[140px] sm:max-h-[170px] md:max-h-[200px] overflow-y-auto pr-1">
+      {/* Recommended Nearby Food Joints List */}
+      <div className="flex flex-col gap-1 min-h-0 relative z-10">
+        <div className="flex flex-col gap-1.5 max-h-[145px] sm:max-h-[180px] overflow-y-auto pr-0.5">
           {isLoadingSpots && nearbyRestaurants.length === 0 ? (
-            <div className="flex flex-col gap-2">
-              {[1, 2, 3].map(i => (
-                <div key={i} className="h-14 rounded-2xl bg-white/10 animate-pulse" />
+            <div className="flex flex-col gap-1.5">
+              {[1, 2].map(i => (
+                <div key={i} className="h-12 rounded-xl bg-white/10 animate-pulse" />
               ))}
             </div>
           ) : nearbyRestaurants.length === 0 ? (
-            <div className="p-6 text-center rounded-2xl bg-white/10 border border-white/15 flex flex-col items-center gap-2">
-              <span className="text-2xl">🍽️</span>
-              <p className="text-xs font-bold text-blue-100">No restaurants found in &quot;{currentArea}&quot;.</p>
+            <div className="p-3 text-center rounded-xl bg-white/10 border border-white/15">
+              <p className="text-xs font-bold text-blue-100">No spots found in &quot;{currentArea}&quot;.</p>
               <button
                 onClick={() => handleAreaSelect('All Areas')}
-                className="text-xs font-bold text-yellow-300 hover:underline"
+                className="text-xs font-bold text-[#ff6b4a] hover:underline mt-1 block mx-auto"
               >
-                View all restaurants in {selectedCity} →
+                View all in {selectedCity} →
               </button>
             </div>
           ) : (
@@ -355,31 +260,30 @@ export const StepCity: React.FC<StepCityProps> = ({
                 <div
                   key={rest.id}
                   onClick={() => onSelectRestaurant(rest)}
-                  className={`p-3 rounded-2xl border transition-all cursor-pointer flex items-center justify-between gap-3 text-slate-900 ${
+                  className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 text-slate-900 ${
                     isSelected
-                      ? 'border-2 border-yellow-400 bg-yellow-50/95 shadow-lg scale-[1.01]'
-                      : 'border-white/20 hover:border-yellow-400/50 hover:bg-slate-50 bg-white shadow-md'
+                      ? 'border-2 border-[#D23002] bg-orange-50/95 shadow-md scale-[1.01]'
+                      : 'border-white/20 hover:border-[#D23002]/50 hover:bg-slate-50 bg-white shadow-sm'
                   }`}
                 >
                   {/* Left Thumbnail & Details */}
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="w-12 h-12 rounded-xl overflow-hidden shrink-0 border border-slate-200 shadow-inner">
+                  <div className="flex items-center gap-2.5 min-w-0">
+                    <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 shadow-inner">
                       <img src={rest.image} alt={rest.name} className="w-full h-full object-cover" />
                     </div>
 
                     <div className="min-w-0">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#023093]' : 'text-slate-900'}`}>
+                        <h4 className={`font-black text-xs sm:text-sm brand-font truncate ${isSelected ? 'text-[#D23002]' : 'text-slate-900'}`}>
                           {rest.name}
                         </h4>
-                        <span className="flex items-center text-[10px] font-bold text-amber-700 bg-amber-100 px-1.5 py-0.2 rounded">
+                        <span className="flex items-center text-[9px] font-bold text-amber-700 bg-amber-100 px-1 py-0.2 rounded">
                           ★ {rest.rating}
                         </span>
                       </div>
 
-                      {/* Locality & Live Distance Tag */}
-                      <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-slate-500 font-semibold mt-0.5 truncate">
-                        <span className="text-[#023093] font-bold bg-blue-100/70 px-1.5 py-0.2 rounded truncate">
+                      <div className="flex items-center gap-1.5 text-[9px] sm:text-[10px] text-slate-500 font-semibold mt-0.5 truncate">
+                        <span className="text-[#023093] font-bold bg-blue-100/70 px-1 rounded truncate">
                           📍 {rest.area || rest.city}
                         </span>
                         <span>•</span>
@@ -397,9 +301,9 @@ export const StepCity: React.FC<StepCityProps> = ({
                       e.stopPropagation();
                       onSelectRestaurant(rest);
                     }}
-                    className={`px-3 py-1.5 rounded-xl text-xs font-black transition-all shrink-0 cursor-pointer brand-font ${
+                    className={`px-2.5 py-1 rounded-lg text-[10px] sm:text-xs font-black transition-all shrink-0 cursor-pointer brand-font ${
                       isSelected
-                        ? 'bg-[#023093] text-white shadow-md shadow-blue-900/30'
+                        ? 'bg-[#D23002] text-white shadow-md'
                         : 'bg-slate-100 hover:bg-slate-200 text-slate-700'
                     }`}
                   >
@@ -413,22 +317,14 @@ export const StepCity: React.FC<StepCityProps> = ({
       </div>
 
       {/* Navigation Footer */}
-      <div className="flex items-center gap-3 pt-1 relative z-10">
-        <button
-          onClick={onBack}
-          type="button"
-          className="px-5 py-3 rounded-xl bg-white/15 hover:bg-white/25 text-white font-bold text-xs sm:text-sm border border-white/20 transition-all cursor-pointer"
-        >
-          Back
-        </button>
-
+      <div className="pt-0.5 relative z-10">
         <button
           onClick={onNext}
           disabled={!selectedRestaurant}
           type="button"
-          className="flex-1 py-3.5 px-5 rounded-xl bg-gradient-to-r from-yellow-400 via-amber-400 to-yellow-500 hover:from-yellow-300 hover:to-amber-400 text-slate-950 font-black text-xs sm:text-sm shadow-xl shadow-yellow-500/25 hover:shadow-2xl transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide"
+          className="w-full py-2.5 sm:py-3 px-4 rounded-xl bg-[#D23002] hover:bg-[#eb420e] text-white font-black text-xs sm:text-sm shadow-xl shadow-[#D23002]/30 transition-all flex items-center justify-center gap-2 cursor-pointer brand-font disabled:opacity-50 tracking-wide border border-white/20"
         >
-          <span>Next: Pick Food to Feed</span>
+          <span>Next: Pick Spicy Dish</span>
           <ArrowRight className="w-4 h-4" />
         </button>
       </div>
