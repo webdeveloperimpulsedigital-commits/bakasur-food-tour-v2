@@ -454,6 +454,6 @@ export function generateLiveMenuForRestaurant(restaurant: { id: number; name: st
     rating: item.rating,
     popularity: item.popularity,
     is_recommended: idx < 3 ? 1 : 0,
-    status: 'active'
+    status: 'active' as const
   }));
 }

@@ -773,7 +773,7 @@ export const db = {
     return list.sort((a, b) => b.popularity - a.popularity);
   },
 
-  async getDishesByRestaurant(restaurantId: number, options?: { search?: string }) {
+  async getDishesByRestaurant(restaurantId: number, options?: { search?: string }): Promise<Dish[]> {
     if (memoryStore.dishes.length === 0) {
       memoryStore.seed();
     }
@@ -786,10 +786,10 @@ export const db = {
       const rest = await this.getRestaurantById(restaurantId);
       const name = rest ? rest.name : 'Special';
       return [
-        { id: restaurantId * 100 + 1, restaurant_id: restaurantId, name: `${name} Special Masaledaar Thali`, description: `Special signature feast from ${name}`, price: 280, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 99, is_recommended: 1, status: 'active' },
-        { id: restaurantId * 100 + 2, restaurant_id: restaurantId, name: `${name} Famous Crispy Dosa / Feast`, description: `Crispy golden street specialty with spicy masala`, price: 160, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80", rating: 4.8, popularity: 95, is_recommended: 1, status: 'active' },
-        { id: restaurantId * 100 + 3, restaurant_id: restaurantId, name: "Spicy Schezwan / Tarri Special", description: "Hot fiery red spice specialty to challenge Bakasur", price: 180, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 97, is_recommended: 1, status: 'active' },
-        { id: restaurantId * 100 + 4, restaurant_id: restaurantId, name: "Signature Chai / Thick Shake", description: "Rich comforting beverage to complement the feast", price: 60, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80", rating: 4.7, popularity: 92, is_recommended: 1, status: 'active' }
+        { id: restaurantId * 100 + 1, restaurant_id: restaurantId, name: `${name} Special Masaledaar Thali`, description: `Special signature feast from ${name}`, price: 280, image: "https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 99, is_recommended: 1, status: 'active' as const },
+        { id: restaurantId * 100 + 2, restaurant_id: restaurantId, name: `${name} Famous Crispy Dosa / Feast`, description: `Crispy golden street specialty with spicy masala`, price: 160, image: "https://images.unsplash.com/photo-1668236543090-82eba5ee5976?w=600&auto=format&fit=crop&q=80", rating: 4.8, popularity: 95, is_recommended: 1, status: 'active' as const },
+        { id: restaurantId * 100 + 3, restaurant_id: restaurantId, name: "Spicy Schezwan / Tarri Special", description: "Hot fiery red spice specialty to challenge Bakasur", price: 180, image: "https://images.unsplash.com/photo-1565557623262-b51c2513a641?w=600&auto=format&fit=crop&q=80", rating: 4.9, popularity: 97, is_recommended: 1, status: 'active' as const },
+        { id: restaurantId * 100 + 4, restaurant_id: restaurantId, name: "Signature Chai / Thick Shake", description: "Rich comforting beverage to complement the feast", price: 60, image: "https://images.unsplash.com/photo-1514432324607-a09d9b4aefdd?w=600&auto=format&fit=crop&q=80", rating: 4.7, popularity: 92, is_recommended: 1, status: 'active' as const }
       ];
     }
     return list.sort((a, b) => b.popularity - a.popularity);
