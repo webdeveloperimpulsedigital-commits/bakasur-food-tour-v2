@@ -693,12 +693,8 @@ export const db = {
       memoryStore.seed();
     }
     let list = [...memoryStore.restaurants].filter(r => r.status === 'active');
-    
-    if (options?.city && options.city !== 'All') {
-      list = list.filter(r => r.city.toLowerCase() === options.city?.toLowerCase());
-    }
 
-    // If searching, ignore area constraint to allow finding spots anywhere in the city
+    // 1. If Searching: search ALL restaurants across all cities/areas
     if (options?.search && options.search.trim()) {
       const q = options.search.toLowerCase().trim();
       
@@ -728,17 +724,36 @@ export const db = {
           return fullText.includes(token) || token.includes(normalize(r.name));
         });
       });
-    } else if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
-      const a = options.area.toLowerCase().trim();
-      const filtered = list.filter(r => 
-        r.area.toLowerCase().includes(a) || 
-        a.includes(r.area.toLowerCase()) ||
-        r.address.toLowerCase().includes(a) ||
-        r.name.toLowerCase().includes(a)
-      );
-      // If direct area match found, use it; otherwise fallback to city list
-      if (filtered.length > 0) {
-        list = filtered;
+
+      // Sort: Spots in current city first, then by rating
+      if (options.city && options.city !== 'All') {
+        const targetCity = options.city.toLowerCase();
+        list.sort((a, b) => {
+          const aInCity = a.city.toLowerCase() === targetCity ? 1 : 0;
+          const bInCity = b.city.toLowerCase() === targetCity ? 1 : 0;
+          if (bInCity !== aInCity) return bInCity - aInCity;
+          return b.rating - a.rating;
+        });
+      } else {
+        list.sort((a, b) => b.rating - a.rating);
+      }
+    } else {
+      // 2. Default List (No search query): Filter by City / Area
+      if (options?.city && options.city !== 'All') {
+        list = list.filter(r => r.city.toLowerCase() === options.city?.toLowerCase());
+      }
+
+      if (options?.area && options.area !== 'All' && options.area !== 'All Areas') {
+        const a = options.area.toLowerCase().trim();
+        const filtered = list.filter(r => 
+          r.area.toLowerCase().includes(a) || 
+          a.includes(r.area.toLowerCase()) ||
+          r.address.toLowerCase().includes(a) ||
+          r.name.toLowerCase().includes(a)
+        );
+        if (filtered.length > 0) {
+          list = filtered;
+        }
       }
     }
 
