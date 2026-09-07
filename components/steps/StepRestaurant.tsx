@@ -29,7 +29,7 @@ export const StepRestaurant: React.FC<StepRestaurantProps> = ({
     try {
       let url = `/api/restaurants/nearby?city=${encodeURIComponent(city)}&lat=${userLocation.lat}&lng=${userLocation.lng}`;
       if (query.trim()) {
-        url = `/api/restaurants/search?q=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`;
+        url = `/api/restaurants/search?q=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}&lat=${userLocation.lat}&lng=${userLocation.lng}`;
       }
       const res = await fetch(url);
       const json = await res.json();

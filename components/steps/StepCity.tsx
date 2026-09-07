@@ -138,7 +138,7 @@ export const StepCity: React.FC<StepCityProps> = ({
       const areaParam = area && area !== 'All Areas' && area !== 'All' ? encodeURIComponent(area) : '';
       let url = `/api/restaurants/nearby?city=${encodeURIComponent(city)}&area=${areaParam}&lat=${coords.lat}&lng=${coords.lng}`;
       if (query.trim()) {
-        url = `/api/restaurants/search?q=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}`;
+        url = `/api/restaurants/search?q=${encodeURIComponent(query)}&city=${encodeURIComponent(city)}&lat=${coords.lat}&lng=${coords.lng}`;
       }
       const res = await fetch(url);
       const json = await res.json();
