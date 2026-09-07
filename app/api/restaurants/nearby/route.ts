@@ -24,11 +24,11 @@ export async function GET(request: Request) {
     const lng = parseFloat(searchParams.get('longitude') || searchParams.get('lng') || '');
     const city = searchParams.get('city') || '';
     const area = searchParams.get('area') || '';
-    const limit = parseInt(searchParams.get('limit') || '20', 10);
+    const limit = parseInt(searchParams.get('limit') || '60', 10);
 
+    // Fetch all restaurants in the city
     const allRestaurants = await db.getRestaurants({
-      city: city || undefined,
-      area: area && area !== 'All' && area !== 'All Areas' ? area : undefined
+      city: city || 'Pune'
     });
 
     let results = allRestaurants.map(r => {
@@ -42,10 +42,33 @@ export async function GET(request: Request) {
       };
     });
 
-    if (!isNaN(lat) && !isNaN(lng)) {
-      results.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+    if (area && area !== 'All' && area !== 'All Areas') {
+      const a = area.toLowerCase().trim();
+      const inArea = results.filter(r => 
+        r.area.toLowerCase().includes(a) || 
+        a.includes(r.area.toLowerCase()) || 
+        r.address.toLowerCase().includes(a)
+      );
+      const outsideArea = results.filter(r => 
+        !r.area.toLowerCase().includes(a) && 
+        !a.includes(r.area.toLowerCase()) && 
+        !r.address.toLowerCase().includes(a)
+      );
+      
+      if (!isNaN(lat) && !isNaN(lng)) {
+        inArea.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+        outsideArea.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+      } else {
+        inArea.sort((a, b) => b.rating - a.rating);
+        outsideArea.sort((a, b) => b.rating - a.rating);
+      }
+      results = [...inArea, ...outsideArea];
     } else {
-      results.sort((a, b) => b.rating - a.rating || (b.total_visits || 0) - (a.total_visits || 0));
+      if (!isNaN(lat) && !isNaN(lng)) {
+        results.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
+      } else {
+        results.sort((a, b) => b.rating - a.rating || (b.total_visits || 0) - (a.total_visits || 0));
+      }
     }
 
     return NextResponse.json({

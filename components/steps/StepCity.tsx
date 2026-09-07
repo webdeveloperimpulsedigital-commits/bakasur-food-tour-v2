@@ -243,7 +243,7 @@ export const StepCity: React.FC<StepCityProps> = ({
           type="text"
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder={`🔍 Search ANY spot in ${selectedCity} (e.g. Roopali, Vaishali, Katakirr, Goodluck)...`}
+          placeholder={`🔍 Search ALL 40+ Pune spots (e.g. Roopali, Jagdamb, Ishan, Katakirr, Goodluck)...`}
           className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
         />
         {searchQuery && (
@@ -256,12 +256,41 @@ export const StepCity: React.FC<StepCityProps> = ({
         )}
       </div>
 
+      {/* Quick Category / Neighborhood Filter Chips */}
+      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-[10px] relative z-10">
+        {[
+          { label: "🌟 All Pune Spots", query: "" },
+          { label: "🔥 Sinhagad & Nanded", query: "sinhagad" },
+          { label: "📍 FC & Deccan", query: "fc road" },
+          { label: "🍛 Misal Addas", query: "misal" },
+          { label: "🍗 Non-Veg / Biryani", query: "biryani" },
+          { label: "☕ Irani Chai & Cafes", query: "cafe" },
+          { label: "🥞 Dosa & South", query: "dosa" }
+        ].map(chip => {
+          const isActive = (chip.query === '' && searchQuery === '') || (chip.query !== '' && searchQuery.toLowerCase() === chip.query);
+          return (
+            <button
+              key={chip.label}
+              type="button"
+              onClick={() => setSearchQuery(chip.query)}
+              className={`px-2 py-1 rounded-lg font-bold shrink-0 transition-all cursor-pointer border ${
+                isActive
+                  ? 'bg-amber-400 text-slate-950 border-amber-300 font-extrabold shadow-sm'
+                  : 'bg-white/10 hover:bg-white/20 text-white border-white/15'
+              }`}
+            >
+              {chip.label}
+            </button>
+          );
+        })}
+      </div>
+
       {/* Recommended Nearby Food Joints List */}
       <div className="flex flex-col gap-1 min-h-0 relative z-10">
-        <div className="flex flex-col gap-1.5 max-h-[145px] sm:max-h-[180px] overflow-y-auto pr-0.5">
+        <div className="flex flex-col gap-1.5 max-h-[220px] sm:max-h-[265px] overflow-y-auto pr-0.5">
           {isLoadingSpots && nearbyRestaurants.length === 0 ? (
             <div className="flex flex-col gap-1.5">
-              {[1, 2].map(i => (
+              {[1, 2, 3].map(i => (
                 <div key={i} className="h-12 rounded-xl bg-white/10 animate-pulse" />
               ))}
             </div>
