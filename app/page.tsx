@@ -34,17 +34,99 @@ export default function CampaignPage() {
     lat: 18.5204,
     lng: 73.8407
   });
-  const [selectedArea, setSelectedArea] = useState<string>('FC Road');
+  const [userCoords, setUserCoords] = useState<{ lat: number; lng: number } | null>(null);
+  const [selectedArea, setSelectedArea] = useState<string>('');
+  const [isLocating, setIsLocating] = useState<boolean>(true);
   const [selectedRestaurant, setSelectedRestaurant] = useState<Restaurant | null>(null);
   const [selectedDish, setSelectedDish] = useState<Dish | { name: string; id?: number; price?: number } | null>(null);
   const [selectedSpice, setSelectedSpice] = useState<SpiceOption>(SPICE_LEVELS[1]); // Default Masaledaar (3/5)
   const [soundEnabled, setSoundEnabled] = useState<boolean>(false);
   const [feastingStage, setFeastingStage] = useState<1 | 2 | 3>(1);
 
-  // Video State
+  const [locationSource, setLocationSource] = useState<'gps' | 'ip' | 'manual'>('gps');
   const [videoUrl, setVideoUrl] = useState<string>('/uploads/videos/video-frame-1.mp4');
 
-  // Initialize Session ID & Auto Detect Live Location
+  // Live Location Detection (Zomato/Swiggy-Style: High-Accuracy Device GPS + Fast IP Fallback)
+  const detectLiveLocation = useCallback(async (forcedUserAction = false) => {
+    if (typeof window === 'undefined') return;
+
+    setIsLocating(true);
+
+    const resolveCoordsToCity = async (lat: number, lng: number, source: 'gps' | 'ip') => {
+      try {
+        const res = await fetch(`/api/location?lat=${lat}&lng=${lng}`);
+        const json = await res.json();
+        if (json.success && json.detectedCity) {
+          const finalArea = json.preciseSublocality || json.detectedArea?.name || '';
+          const resolvedCity: CityItem = {
+            name: json.detectedCity.name,
+            state: json.detectedCity.state || 'Maharashtra',
+            lat: lat,
+            lng: lng
+          };
+
+          setUserCoords({ lat, lng });
+          setLocationSource(source);
+          setSelectedCity(resolvedCity);
+          setSelectedArea(finalArea);
+
+          try {
+            localStorage.setItem('bakasur_saved_location', JSON.stringify({
+              city: resolvedCity,
+              area: finalArea,
+              coords: { lat, lng },
+              locationSource: source
+            }));
+          } catch {}
+        }
+      } catch (err) {
+        console.warn('Location reverse-geocode error:', err);
+      } finally {
+        setIsLocating(false);
+      }
+    };
+
+    // Fast IP-based lookup fallback
+    const runIpFallback = async () => {
+      try {
+        const ipRes = await fetch('https://ipwho.is/');
+        const ipData = await ipRes.json();
+        if (ipData.success && ipData.latitude && ipData.longitude) {
+          await resolveCoordsToCity(ipData.latitude, ipData.longitude, 'ip');
+          return;
+        }
+      } catch (e) {
+        console.warn('IP fallback warning:', e);
+      }
+      // If IP lookup fails, use Pune center as default fallback
+      await resolveCoordsToCity(18.5204, 73.8407, 'ip');
+    };
+
+    // Prompt High-Accuracy Hardware / Device GPS
+    if (typeof navigator !== 'undefined' && navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        async (pos) => {
+          try {
+            const { latitude, longitude } = pos.coords;
+            await resolveCoordsToCity(latitude, longitude, 'gps');
+          } catch {
+            await runIpFallback();
+          } finally {
+            setIsLocating(false);
+          }
+        },
+        async (err) => {
+          console.warn('Browser GPS prompt error/denied:', err.message);
+          await runIpFallback();
+        },
+        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      );
+    } else {
+      await runIpFallback();
+    }
+  }, []);
+
+  // Initialize Session ID & Auto Detect Live Location on Mount
   useEffect(() => {
     let sess = localStorage.getItem('bakasur_session_id');
     if (!sess) {
@@ -53,36 +135,9 @@ export default function CampaignPage() {
     }
     setSessionId(sess);
 
-    // Auto-detect user live location immediately
-    if (typeof window !== 'undefined' && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        async (pos) => {
-          try {
-            const { latitude, longitude } = pos.coords;
-            const res = await fetch(`/api/location?lat=${latitude}&lng=${longitude}`);
-            const json = await res.json();
-            if (json.success && json.detectedCity) {
-              setSelectedCity({
-                name: json.detectedCity.name,
-                state: json.detectedCity.state || 'Maharashtra',
-                lat: latitude,
-                lng: longitude
-              });
-              if (json.detectedArea?.name) {
-                setSelectedArea(json.detectedArea.name);
-              }
-            }
-          } catch {
-            // Keep default Pune
-          }
-        },
-        () => {
-          // Keep default Pune
-        },
-        { timeout: 7000, enableHighAccuracy: true }
-      );
-    }
-  }, []);
+    // Auto-trigger live GPS detection immediately on load
+    detectLiveLocation();
+  }, [detectLiveLocation]);
 
   // Web Audio FX Generator
   const playSound = useCallback((type: 'click' | 'bite' | 'fanfare' | 'relief') => {
@@ -141,6 +196,8 @@ export default function CampaignPage() {
     setFeastingStage(1);
     setCurrentStep('city');
     setVideoUrl('/uploads/videos/video-frame-1.mp4');
+    // Actively prompt GPS on start tour user gesture
+    detectLiveLocation(true);
   };
 
   // Transitions: Step 1 (City & Hotel Selection) -> Step 3 (Dish)
@@ -247,14 +304,17 @@ export default function CampaignPage() {
             currentStep === 'start'
               ? `Ready in ${selectedCity.name}`
               : currentStep === 'city'
-              ? `Bakasur in ${selectedCity.name}`
+              ? `Bakasur in ${selectedArea || selectedCity.name}`
               : currentStep === 'dish'
               ? (selectedDish ? `${selectedDish.name} at ${selectedRestaurant?.name}` : `At ${selectedRestaurant?.name}`)
-              : selectedDish?.name
+              : (selectedDish ? selectedDish.name : 'Signature Food')
           }
+          dishImage={selectedDish && 'image' in selectedDish && selectedDish.image ? selectedDish.image : undefined}
+          restaurantName={selectedRestaurant?.name}
           spice={selectedSpice}
           soundEnabled={soundEnabled}
           onToggleSound={() => setSoundEnabled(!soundEnabled)}
+          onSelectDish={(d) => setSelectedDish(d)}
         />
       </div>
 
@@ -273,8 +333,6 @@ export default function CampaignPage() {
             /* Step 0: Landing / Start Screen */
             <StepStart
               onStartTour={handleStartTour}
-              selectedCity={selectedCity.name}
-              selectedArea={selectedArea}
             />
           )}
 
@@ -283,10 +341,36 @@ export default function CampaignPage() {
             <StepCity
               selectedCity={selectedCity.name}
               selectedArea={selectedArea}
-              userCoords={{ lat: selectedCity.lat, lng: selectedCity.lng }}
+              userCoords={userCoords}
               selectedRestaurant={selectedRestaurant}
-              onSelectCity={(city) => setSelectedCity(city)}
-              onSelectArea={(area) => setSelectedArea(area)}
+              isLocating={isLocating}
+              locationSource={locationSource}
+              onDetectLocation={() => detectLiveLocation(true)}
+              onSelectCity={(city) => {
+                setSelectedCity(city);
+                const coords = { lat: city.lat, lng: city.lng };
+                setUserCoords(coords);
+                setSelectedArea('');
+                setLocationSource('manual');
+                try {
+                  localStorage.setItem('bakasur_saved_location', JSON.stringify({ city, area: '', coords, locationSource: 'manual' }));
+                } catch {}
+              }}
+              onSelectArea={(area, coords) => {
+                setSelectedArea(area);
+                if (coords) {
+                  setUserCoords(coords);
+                }
+                setLocationSource('manual');
+                try {
+                  localStorage.setItem('bakasur_saved_location', JSON.stringify({ 
+                    city: selectedCity, 
+                    area, 
+                    coords: coords || userCoords, 
+                    locationSource: 'manual' 
+                  }));
+                } catch {}
+              }}
               onSelectRestaurant={(rest) => setSelectedRestaurant(rest)}
               onNext={handleCityNext}
               onBack={() => setCurrentStep('start')}
@@ -310,7 +394,7 @@ export default function CampaignPage() {
             /* Step 4 & Step 5: Feasting & Heartburn Multi-Stage */
             <StepEating
               restaurant={selectedRestaurant}
-              dish={selectedDish || { name: 'Bun Omelette' }}
+              dish={selectedDish || { name: 'Signature Food' }}
               spice={selectedSpice}
               sessionId={sessionId}
               feastingStage={feastingStage}
@@ -326,8 +410,8 @@ export default function CampaignPage() {
           {currentStep === 'relief_countdown' && (
             /* Step 6: 6-Second Gastrium Relief Active Countdown Screen */
             <StepRelief
-              restaurant={selectedRestaurant || { id: 1, name: 'Goodluck Cafe', city: selectedCity.name, address: 'FC Road', area: 'Deccan', rating: 4.8, image: '', description: '', is_campaign_active: 1, total_visits: 1200, status: 'active', latitude: 0, longitude: 0 }}
-              dish={selectedDish || { name: 'Bun Omelette' }}
+              restaurant={selectedRestaurant || { id: 1, name: 'Local Food Joint', city: selectedCity.name, address: selectedCity.name, area: selectedArea || selectedCity.name, rating: 4.8, image: '', description: '', is_campaign_active: 1, total_visits: 1200, status: 'active', latitude: 0, longitude: 0 }}
+              dish={selectedDish || { name: 'Signature Food' }}
               spice={selectedSpice}
               isCountdownDone={false}
               onCountdownComplete={handleCountdownComplete}

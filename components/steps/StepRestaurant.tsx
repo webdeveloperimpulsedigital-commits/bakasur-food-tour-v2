@@ -79,11 +79,11 @@ export const StepRestaurant: React.FC<StepRestaurantProps> = ({
             <p className="text-xs text-slate-500">No food joints found for &quot;{searchQuery}&quot;.</p>
           </div>
         ) : (
-          restaurants.map((rest) => {
+          restaurants.map((rest, idx) => {
             const isSelected = selectedRestaurant?.id === rest.id;
             return (
               <div
-                key={rest.id}
+                key={`${rest.id}-${idx}`}
                 onClick={() => onSelectRestaurant(rest)}
                 className={`p-3.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
                   isSelected

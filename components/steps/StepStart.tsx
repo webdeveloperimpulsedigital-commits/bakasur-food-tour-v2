@@ -5,18 +5,14 @@ import React from 'react';
 interface StepStartProps {
   onStartTour: () => void;
   isLoading?: boolean;
-  selectedCity?: string;
-  selectedArea?: string;
 }
 
 export const StepStart: React.FC<StepStartProps> = ({
   onStartTour,
   isLoading = false,
-  selectedCity = 'Pune',
-  selectedArea = ''
 }) => {
   return (
-    <div className="w-full flex flex-col items-center justify-center text-center gap-6 sm:gap-8 text-white max-w-sm mx-auto py-4">
+    <div className="w-full flex flex-col items-center justify-center text-center gap-5 sm:gap-7 text-white max-w-sm mx-auto py-3">
       {/* Title & Paragraph */}
       <div className="flex flex-col items-center gap-2">
         <h1 className="text-3xl sm:text-4xl md:text-5xl font-black text-white tracking-tight lowercase brand-font leading-tight">
@@ -40,6 +36,7 @@ export const StepStart: React.FC<StepStartProps> = ({
     </div>
   );
 };
+
 
 
 

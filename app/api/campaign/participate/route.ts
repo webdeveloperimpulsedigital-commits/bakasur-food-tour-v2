@@ -25,12 +25,12 @@ export async function POST(request: Request) {
     }
 
     // Lookup restaurant and dish names for participation pass
-    let restaurantName = "Vaishali Restaurant";
-    let dishName = "Mysore Masala Dosa";
-    let restLat = 18.5204;
-    let restLng = 73.8407;
+    let restaurantName = body.restaurant_name || "Local Food Spot";
+    let dishName = body.dish_name || "Signature Specialty";
+    let restLat = body.latitude ? parseFloat(body.latitude) : 18.5204;
+    let restLng = body.longitude ? parseFloat(body.longitude) : 73.8407;
 
-    if (restaurant_id) {
+    if (restaurant_id && (!body.restaurant_name || restaurantName === 'Local Food Spot')) {
       const rest = await db.getRestaurantById(parseInt(restaurant_id, 10));
       if (rest) {
         restaurantName = rest.name;
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       }
     }
 
-    if (dish_id) {
+    if (dish_id && (!body.dish_name || dishName === 'Signature Specialty')) {
       const d = await db.getDishById(parseInt(dish_id, 10));
       if (d) {
         dishName = d.name;

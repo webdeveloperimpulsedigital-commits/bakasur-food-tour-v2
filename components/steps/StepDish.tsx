@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Search, ArrowRight, ArrowLeft, PlusCircle, Check, Flame, Sparkles } from 'lucide-react';
 import { Restaurant, Dish } from '@/lib/db';
+import { getDishImage } from '../BakasurVideoPlayer';
 
 export interface SpiceOption {
   id: string;
@@ -41,6 +42,8 @@ export const StepDish: React.FC<StepDishProps> = ({
   const [searchQuery, setSearchQuery] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
+  const [categoryFilter, setCategoryFilter] = useState<string>('all');
+
   // Fetch live menu for the selected restaurant
   const fetchDishes = useCallback(async () => {
     setIsLoading(true);
@@ -70,17 +73,38 @@ export const StepDish: React.FC<StepDishProps> = ({
     fetchDishes();
   }, [fetchDishes]);
 
-  // Display top 3 dishes by default; or all matching dishes when searching
+  // Display ALL dishes from the restaurant; filterable by search and category
   const displayedDishes = useMemo(() => {
-    if (!searchQuery.trim()) {
-      return dishes.slice(0, 3); // Show exactly top 3 when not searching
+    let list = dishes;
+    if (categoryFilter === 'special') {
+      list = dishes.filter(d => d.is_recommended || d.popularity >= 98);
+    } else if (categoryFilter === 'starters') {
+      list = dishes.filter(d => {
+        const n = d.name.toLowerCase();
+        return n.includes('tikka') || n.includes('kebab') || n.includes('fry') || n.includes('vada') || n.includes('chaat') || n.includes('soup') || n.includes('momos') || n.includes('roll') || n.includes('bread') || n.includes('bites') || n.includes('pakoda');
+      });
+    } else if (categoryFilter === 'mains') {
+      list = dishes.filter(d => {
+        const n = d.name.toLowerCase();
+        return n.includes('biryani') || n.includes('curry') || n.includes('gravy') || n.includes('handi') || n.includes('masala') || n.includes('thali') || n.includes('paneer') || n.includes('mutton') || n.includes('chicken') || n.includes('pithla') || n.includes('misal') || n.includes('pizza') || n.includes('burger') || n.includes('rice') || n.includes('noodles');
+      });
+    } else if (categoryFilter === 'desserts') {
+      list = dishes.filter(d => {
+        const n = d.name.toLowerCase();
+        return n.includes('mastani') || n.includes('ice cream') || n.includes('falooda') || n.includes('kulfi') || n.includes('modak') || n.includes('jamun') || n.includes('cake') || n.includes('lassi') || n.includes('shake') || n.includes('coffee') || n.includes('chai') || n.includes('solkadhi') || n.includes('waffle') || n.includes('sheera');
+      });
     }
+
+    if (!searchQuery.trim()) {
+      return list.length > 0 ? list : dishes;
+    }
+
     const q = searchQuery.toLowerCase().trim();
     return dishes.filter(d => 
       d.name.toLowerCase().includes(q) || 
       (d.description && d.description.toLowerCase().includes(q))
     );
-  }, [dishes, searchQuery]);
+  }, [dishes, searchQuery, categoryFilter]);
 
   // Handle selecting a dish
   const handleSelectDish = (dish: Dish) => {
@@ -110,8 +134,8 @@ export const StepDish: React.FC<StepDishProps> = ({
             <h2 className="text-sm sm:text-base md:text-lg font-black tracking-tight text-white brand-font leading-tight truncate">
               {restaurant.name}:
             </h2>
-            <span className="text-[9px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-1.5 py-0.5 rounded-full flex items-center gap-1">
-              <span>👑 Top 3 Specialties</span>
+            <span className="text-[9px] font-bold text-amber-300 bg-amber-950/70 border border-amber-500/40 px-2 py-0.5 rounded-full flex items-center gap-1">
+              <span>📖 Full Menu ({dishes.length} Items)</span>
             </span>
           </div>
           <p className="text-[10px] sm:text-[11px] text-blue-200 font-medium leading-snug">
@@ -131,6 +155,30 @@ export const StepDish: React.FC<StepDishProps> = ({
         )}
       </div>
 
+      {/* Category Filter Chips Bar */}
+      <div className="shrink-0 flex items-center gap-1 overflow-x-auto pb-0.5 scrollbar-none">
+        {[
+          { id: 'all', label: `All (${dishes.length})` },
+          { id: 'special', label: '👑 Specials' },
+          { id: 'mains', label: '🍛 Main Course' },
+          { id: 'starters', label: '🍢 Starters & Snacks' },
+          { id: 'desserts', label: '🥤 Drinks & Sweets' }
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            type="button"
+            onClick={() => setCategoryFilter(tab.id)}
+            className={`px-2.5 py-1 rounded-lg text-[10px] font-bold shrink-0 transition-all border cursor-pointer ${
+              categoryFilter === tab.id
+                ? 'bg-[#D23002] border-[#D23002] text-white shadow-sm'
+                : 'bg-white/10 hover:bg-white/20 border-white/15 text-blue-200 hover:text-white'
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
+
       {/* Dish Search Bar */}
       <div className="shrink-0 relative z-10">
         <div className="relative">
@@ -139,7 +187,7 @@ export const StepDish: React.FC<StepDishProps> = ({
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder={`Search menu or type any dish from ${restaurant.name}...`}
+            placeholder={`Search all ${dishes.length} dishes from ${restaurant.name}...`}
             className="w-full pl-8 pr-7 py-2 rounded-xl bg-white border border-blue-200 text-slate-900 text-xs placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-[#D23002] shadow-md"
           />
           {searchQuery && (
@@ -194,7 +242,7 @@ export const StepDish: React.FC<StepDishProps> = ({
             const rankLabel = !searchQuery.trim() ? (idx === 0 ? '🔥 #1 Signature' : idx === 1 ? '⭐ #2 Popular' : '✨ #3 Must Try') : null;
             return (
               <div
-                key={dish.id}
+                key={`${dish.id}-${idx}`}
                 onClick={() => handleSelectDish(dish)}
                 className={`p-2 sm:p-2.5 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-2.5 text-slate-900 ${
                   isSelected
@@ -205,11 +253,11 @@ export const StepDish: React.FC<StepDishProps> = ({
                 {/* Left image & details */}
                 <div className="flex items-center gap-2.5 min-w-0">
                   <div className="w-10 h-10 rounded-lg overflow-hidden shrink-0 border border-slate-200 bg-slate-100 flex items-center justify-center">
-                    {dish.image ? (
-                      <img src={dish.image} alt={dish.name} className="w-full h-full object-cover" />
-                    ) : (
-                      <span className="text-base">🍽️</span>
-                    )}
+                    <img 
+                      src={getDishImage(dish.name, dish.image)} 
+                      alt={dish.name} 
+                      className="w-full h-full object-cover" 
+                    />
                   </div>
                   <div className="min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
@@ -221,11 +269,6 @@ export const StepDish: React.FC<StepDishProps> = ({
                           {rankLabel}
                         </span>
                       )}
-                      {dish.price ? (
-                        <span className="text-[9px] font-extrabold text-slate-600 bg-slate-100 px-1 py-0.2 rounded border border-slate-200">
-                          ₹{dish.price}
-                        </span>
-                      ) : null}
                     </div>
                     <p className="text-[9px] sm:text-[10px] text-slate-500 truncate mt-0.5">
                       {dish.description || `Specialty at ${restaurant.name}.`}

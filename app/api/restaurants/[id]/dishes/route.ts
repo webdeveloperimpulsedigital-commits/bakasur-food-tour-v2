@@ -17,22 +17,28 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
       return NextResponse.json({ success: false, error: 'Invalid restaurant id' }, { status: 400 });
     }
 
-    // 1. Check existing DB dishes
+    // 1. Fetch restaurant profile (from DB or query params)
+    let restInfo = await db.getRestaurantById(restId);
+    const requestedName = (restName || '').trim();
+    const isExactDbMatch = Boolean(
+      restInfo && requestedName && restInfo.name.toLowerCase().trim() === requestedName.toLowerCase()
+    );
+
     let dbDishes: Dish[] = [];
-    try {
-      dbDishes = await db.getDishesByRestaurant(restId);
-    } catch {
-      dbDishes = [];
+    if (isExactDbMatch) {
+      try {
+        dbDishes = await db.getDishesByRestaurant(restId);
+      } catch {
+        dbDishes = [];
+      }
     }
 
-    // 2. Fetch restaurant profile (from DB or query params)
-    let restInfo = await db.getRestaurantById(restId);
-    if (!restInfo) {
+    if (!restInfo || !isExactDbMatch) {
       restInfo = {
         id: restId,
-        name: restName || 'Iconic Food Joint',
-        area: restArea || 'Local Adda',
-        city: restCity || 'Pune',
+        name: requestedName || restInfo?.name || 'Iconic Food Joint',
+        area: restArea || restInfo?.area || 'Local Area',
+        city: restCity || restInfo?.city || 'Pune',
         description: 'Authentic culinary specialty & live menu',
         address: `${restArea ? restArea + ', ' : ''}${restCity || 'Pune'}`,
         latitude: 18.5204,
@@ -43,18 +49,17 @@ export async function GET(request: Request, context: { params: Promise<{ id: str
         total_visits: 1200,
         status: 'active'
       };
-    } else if (restName && (!restInfo.name || restInfo.name === 'Local Hotel')) {
-      restInfo.name = restName;
     }
 
-    // 3. Generate dynamic live menu based on hotel cuisine & specialty
+    // 2. Generate accurate live menu specifically tailored to this restaurant's identity & cuisine
     const liveDishes = generateLiveMenuForRestaurant(restInfo);
 
-    // 4. Merge DB dishes + Live Dishes seamlessly (deduped by dish name)
+    // 3. Merge dishes seamlessly (deduped by dish name, keeping all live items)
     const seenNames = new Set<string>();
     const finalDishes: Dish[] = [];
 
-    for (const d of [...dbDishes, ...liveDishes]) {
+    const sourceList = [...dbDishes, ...liveDishes];
+    for (const d of sourceList) {
       const cleanName = d.name.toLowerCase().trim();
       if (!seenNames.has(cleanName)) {
         seenNames.add(cleanName);

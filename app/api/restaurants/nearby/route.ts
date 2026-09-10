@@ -1,83 +1,56 @@
 import { NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { fetchLiveNearbyPlaces } from '@/lib/livePlaces';
 
 export const dynamic = 'force-dynamic';
 
-function calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number) {
-  const R = 6371; // km
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  return R * c;
-}
+const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
+  'pune': { lat: 18.5204, lng: 73.8407 },
+  'mumbai': { lat: 18.9222, lng: 72.8317 },
+  'delhi': { lat: 28.6507, lng: 77.2334 },
+  'bengaluru': { lat: 12.9452, lng: 77.5704 },
+  'bangalore': { lat: 12.9452, lng: 77.5704 },
+  'hyderabad': { lat: 17.4416, lng: 78.4983 },
+  'kolkata': { lat: 22.5528, lng: 88.3533 },
+  'thane': { lat: 19.1860, lng: 72.9750 },
+  'ahmedabad': { lat: 23.0225, lng: 72.5714 },
+  'surat': { lat: 21.1702, lng: 72.8311 },
+  'jaipur': { lat: 26.9124, lng: 75.7873 },
+  'lucknow': { lat: 26.8467, lng: 80.9462 },
+  'indore': { lat: 22.7196, lng: 75.8577 },
+  'nagpur': { lat: 21.1458, lng: 79.0882 },
+  'nashik': { lat: 19.9975, lng: 73.7898 }
+};
 
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const lat = parseFloat(searchParams.get('latitude') || searchParams.get('lat') || '');
-    const lng = parseFloat(searchParams.get('longitude') || searchParams.get('lng') || '');
-    const city = searchParams.get('city') || '';
+    const latParam = parseFloat(searchParams.get('latitude') || searchParams.get('lat') || '');
+    const lngParam = parseFloat(searchParams.get('longitude') || searchParams.get('lng') || '');
+    const city = searchParams.get('city') || 'Pune';
     const area = searchParams.get('area') || '';
-    const limit = parseInt(searchParams.get('limit') || '60', 10);
+    const limit = parseInt(searchParams.get('limit') || '50', 10);
 
-    // Fetch all restaurants in the city
-    const allRestaurants = await db.getRestaurants({
-      city: city || 'Pune'
-    });
+    let targetLat = latParam;
+    let targetLng = lngParam;
 
-    let results = allRestaurants.map(r => {
-      let distanceKm: number | null = null;
-      if (!isNaN(lat) && !isNaN(lng)) {
-        distanceKm = Math.round(calculateDistance(lat, lng, r.latitude, r.longitude) * 10) / 10;
-      }
-      return {
-        ...r,
-        distanceKm: distanceKm ?? 1.2
-      };
-    });
-
-    if (area && area !== 'All' && area !== 'All Areas') {
-      const a = area.toLowerCase().trim();
-      const inArea = results.filter(r => 
-        r.area.toLowerCase().includes(a) || 
-        a.includes(r.area.toLowerCase()) || 
-        r.address.toLowerCase().includes(a)
-      );
-      const outsideArea = results.filter(r => 
-        !r.area.toLowerCase().includes(a) && 
-        !a.includes(r.area.toLowerCase()) && 
-        !r.address.toLowerCase().includes(a)
-      );
-      
-      if (!isNaN(lat) && !isNaN(lng)) {
-        inArea.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
-        outsideArea.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
-      } else {
-        inArea.sort((a, b) => b.rating - a.rating);
-        outsideArea.sort((a, b) => b.rating - a.rating);
-      }
-      results = [...inArea, ...outsideArea];
-    } else {
-      if (!isNaN(lat) && !isNaN(lng)) {
-        results.sort((a, b) => (a.distanceKm || 0) - (b.distanceKm || 0));
-      } else {
-        results.sort((a, b) => b.rating - a.rating || (b.total_visits || 0) - (a.total_visits || 0));
-      }
+    if (isNaN(targetLat) || isNaN(targetLng)) {
+      const cityKey = city.toLowerCase().trim();
+      const defaultCoords = CITY_COORDS[cityKey] || CITY_COORDS['pune'];
+      targetLat = defaultCoords.lat;
+      targetLng = defaultCoords.lng;
     }
+
+    // Fetch REAL-WORLD live restaurants directly via Live Places API around user's exact coordinates
+    const liveRestaurants = await fetchLiveNearbyPlaces(targetLat, targetLng, city);
 
     return NextResponse.json({
       success: true,
-      count: results.length,
-      data: results.slice(0, limit)
+      count: liveRestaurants.length,
+      isLiveAPI: true,
+      data: liveRestaurants.slice(0, limit)
     });
   } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Failed to fetch nearby restaurants';
+    const message = error instanceof Error ? error.message : 'Failed to fetch live nearby restaurants';
     return NextResponse.json({ success: false, error: message }, { status: 500 });
   }
 }
